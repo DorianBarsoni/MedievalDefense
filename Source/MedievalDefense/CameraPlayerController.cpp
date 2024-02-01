@@ -10,11 +10,8 @@
 FVector2D MousePosition;
 
 ACameraPlayerController::ACameraPlayerController() {
-	minX = -350;
-	maxX = 4400;
-	minY = -180;
-	maxY = 9413;
-	speed = 50;
+	minX = -350; maxX = 4400; minY = -180; maxY = 9413; speed = 50;
+	APlayerController::bShowMouseCursor = 1;
 }
 
 void ACameraPlayerController::BeginPlay() {
