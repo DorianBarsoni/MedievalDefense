@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "TroopCharacter.h"
-#include "KnightDataAsset.h"
 #include "LifeComponent.h"
 #include "KnightCharacter.generated.h"
 
@@ -18,9 +17,6 @@ class MEDIEVALDEFENSE_API AKnightCharacter : public ATroopCharacter
 
 public:
 	AKnightCharacter();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UKnightDataAsset *KnightDataAsset;
 
 protected:
 	virtual void BeginPlay() override;

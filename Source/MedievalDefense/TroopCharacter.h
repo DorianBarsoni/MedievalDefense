@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "LifeComponent.h"
+#include "TroopDataAsset.h"
 #include "TroopCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -15,6 +16,9 @@ class MEDIEVALDEFENSE_API ATroopCharacter : public ACharacter
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ULifeComponent *LifeComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTroopDataAsset* TroopDataAsset;
 
 	ATroopCharacter();
 

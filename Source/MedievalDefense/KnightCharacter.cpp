@@ -7,7 +7,7 @@ AKnightCharacter::AKnightCharacter() {
 }
 
 void AKnightCharacter::BeginPlay() {
-	LifeComponent->SetLife(KnightDataAsset->LifePoint);
+	LifeComponent->SetLife(TroopDataAsset->LifePoint);
 
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Life : %d"), LifeComponent->GetLife()));
