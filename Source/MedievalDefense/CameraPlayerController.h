@@ -26,7 +26,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	int maxY;
 	UPROPERTY(EditAnywhere)
-	int speed;
+	float speed;
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
