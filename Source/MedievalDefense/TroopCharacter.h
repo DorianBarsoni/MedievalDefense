@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "LifeComponent.h"
 #include "TroopDataAsset.h"
+#include "TeamComponent.h"
 #include "TroopCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -18,19 +17,26 @@ public:
 	ULifeComponent *LifeComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTroopDataAsset* TroopDataAsset;
+	UTeamComponent *TeamComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTroopDataAsset *TroopDataAsset;
+
+	
 	ATroopCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void MakeTroopAlly();
+
+	UFUNCTION(BlueprintCallable)
+	void MakeTroopEnemy();
 
 };

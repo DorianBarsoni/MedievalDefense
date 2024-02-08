@@ -2,6 +2,8 @@
 
 
 #include "TroopCharacter.h"
+#include "AllyComponent.h"
+#include "EnemyComponent.h"
 
 // Sets default values
 ATroopCharacter::ATroopCharacter()
@@ -9,6 +11,7 @@ ATroopCharacter::ATroopCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	LifeComponent = CreateDefaultSubobject<ULifeComponent>(TEXT("LifeComponent"));
+	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("TeamComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -30,5 +33,25 @@ void ATroopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ATroopCharacter::MakeTroopAlly() {
+	UAllyComponent* AllyComponent = Cast<UAllyComponent>(TeamComponent);
+
+	if (!AllyComponent)
+	{
+		TeamComponent = NewObject<UAllyComponent>(this, TEXT("AllyComponent"));
+		TeamComponent->RegisterComponent();
+	}
+}
+
+void ATroopCharacter::MakeTroopEnemy() {
+	UEnemyComponent* EnemyComponent = Cast<UEnemyComponent>(TeamComponent);
+
+	if (!EnemyComponent)
+	{
+		TeamComponent = NewObject<UEnemyComponent>(this, TEXT("EnemyComponent"));
+		TeamComponent->RegisterComponent();
+	}
 }
 
