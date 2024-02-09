@@ -6,48 +6,48 @@
 #include "GameFramework/PlayerController.h"
 #include "Math/Vector2D.h"
 #include "CameraPlayerPawn.h"
+#include "CameraPlayerPawn.h"
 
 FVector2D MousePosition;
 
 ACameraPlayerController::ACameraPlayerController() {
-	minX = -350; maxX = 4400; minY = -180; maxY = 9413; speed = 50;
 	APlayerController::bShowMouseCursor = 1;
 }
 
+ACameraPlayerPawn *camera;
+
 void ACameraPlayerController::BeginPlay() {
+	camera = Cast<ACameraPlayerPawn>(GetPawn());
 }
 
 void ACameraPlayerController::Tick(float DeltaSeconds) {
+	camera->PreviousPosition = camera->GetActorLocation();
+
 	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
 	APlayerController::GetMousePosition(MousePosition.X, MousePosition.Y);
 
-	ACameraPlayerPawn* ControlledPawn = Cast<ACameraPlayerPawn>(GetPawn());
-	if (ControlledPawn) {
-		FVector location = ControlledPawn->GetTargetLocation();
+	if (camera) {
+		FVector location = camera->GetTargetLocation();
 
-		if (MousePosition.X <= 20 && location.Y + speed < maxY) {
-			location.Y += speed;
-			ControlledPawn->SetActorLocation(location);
+		if (MousePosition.X <= 20) {
+			location.Y += camera->speed;
+			camera->SetActorLocation(location);
 		}
 
-		if (MousePosition.X >= ViewportSize.X - 20 && location.Y - speed > minY) {
-			location.Y -= speed;
-			ControlledPawn->SetActorLocation(location);
+		if (MousePosition.X >= ViewportSize.X - 20) {
+			location.Y -= camera->speed;
+			camera->SetActorLocation(location);
 		}
 
-		if (MousePosition.Y <= 20 && location.X - speed > minX) {
-			location.X -= speed;
-			ControlledPawn->SetActorLocation(location);
+		if (MousePosition.Y <= 20) {
+			location.X -= camera->speed;
+			camera->SetActorLocation(location);
 		}
 
-		if (MousePosition.Y >= ViewportSize.Y - 20 && location.X + speed < maxX) {
-			location.X += speed;
-			ControlledPawn->SetActorLocation(location);
+		if (MousePosition.Y >= ViewportSize.Y - 20) {
+			location.X += camera->speed;
+			camera->SetActorLocation(location);
 		}
-
-		UE_LOG(LogTemp, Warning, TEXT("Mouse : %s"), *MousePosition.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Viewport : %s"), *ViewportSize.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Player : %s"), *location.ToString());
 	}
 }
 

@@ -2,6 +2,7 @@
 
 
 #include "CameraPlayerPawn.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ACameraPlayerPawn::ACameraPlayerPawn()
@@ -9,13 +10,17 @@ ACameraPlayerPawn::ACameraPlayerPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+    UBoxComponent* BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+    RootComponent = BoxComponent;
+    BoxComponent->SetGenerateOverlapEvents(true);
+    BoxComponent->SetCollisionProfileName(TEXT("Pawn"));
+
+    speed = 100;
 }
 
-// Called when the game starts or when spawned
 void ACameraPlayerPawn::BeginPlay()
 {
-	Super::BeginPlay();
-	
+    Super::BeginPlay();
 }
 
 // Called every frame

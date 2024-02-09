@@ -17,17 +17,9 @@ class MEDIEVALDEFENSE_API ACameraPlayerController : public APlayerController
 	ACameraPlayerController();
 
 public:
-	UPROPERTY(EditAnywhere)
-	int minX;
-	UPROPERTY(EditAnywhere)
-	int maxX;
-	UPROPERTY(EditAnywhere)
-	int minY;
-	UPROPERTY(EditAnywhere)
-	int maxY;
-	UPROPERTY(EditAnywhere)
-	float speed;
 
 	virtual void BeginPlay() override;
+
 	virtual void Tick(float DeltaSeconds) override;
+
 };
