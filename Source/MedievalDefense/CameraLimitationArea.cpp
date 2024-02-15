@@ -27,12 +27,11 @@ void ACameraLimitationArea::Tick(float DeltaTime)
 
 void ACameraLimitationArea::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Overlap ended!"));
+	/*if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Overlap ended!"));*/
 
 	ACameraPlayerPawn* camera = Cast<ACameraPlayerPawn>(OtherActor);
-	if (camera)
-	{
+	if (camera) {
 		camera->SetActorLocation(camera->PreviousPosition);
 	}
 }
