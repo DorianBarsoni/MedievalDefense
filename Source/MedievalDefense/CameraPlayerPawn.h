@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "CameraLimitationArea.h"
+#include "TroopCharacter.h"
 #include "CameraPlayerPawn.generated.h"
 
 UCLASS(Blueprintable)
@@ -20,6 +21,8 @@ public:
 	UPROPERTY()
 	FVector PreviousPosition;
 
+	TArray<ATroopCharacter*> SelectedTroops;
+
 	ACameraPlayerPawn();
 
 protected:
@@ -29,5 +32,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void LeftMousePressed();
+
+private:
+	void SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops);
 
 };
