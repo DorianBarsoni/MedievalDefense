@@ -42,8 +42,9 @@ void ACameraPlayerPawn::LeftMousePressed() {
     FHitResult HitResult;
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(this);
+    CollisionParams.AddIgnoredActor(GetController());
 
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Visibility, CollisionParams)) {
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
 
         AActor* HitActor = HitResult.GetActor();
         if (HitActor) {
@@ -61,6 +62,10 @@ void ACameraPlayerPawn::LeftMousePressed() {
 
             ATroopCharacter *Troop = Cast<ATroopCharacter>(HitActor);
             Message = FString::Printf(TEXT("TArray size : %d"), SelectedTroops.Num());
+
+            FString name = HitActor->GetActorNameOrLabel();
+
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
 
             if (Troop) {
                 TArray<ATroopCharacter*> NewSelectedTroops;
