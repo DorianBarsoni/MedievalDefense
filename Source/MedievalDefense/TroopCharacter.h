@@ -21,7 +21,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTroopDataAsset *TroopDataAsset;
-
 	
 	ATroopCharacter();
 
