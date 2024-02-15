@@ -14,6 +14,10 @@ class MEDIEVALDEFENSE_API ACameraPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+	FRotator Rotation;
+	FVector ForwardVector;
+	FVector RightVector;
+
 	ACameraPlayerController();
 
 public:

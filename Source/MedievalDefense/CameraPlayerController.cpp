@@ -6,7 +6,6 @@
 #include "GameFramework/PlayerController.h"
 #include "Math/Vector2D.h"
 #include "CameraPlayerPawn.h"
-#include "CameraPlayerPawn.h"
 
 FVector2D MousePosition;
 
@@ -14,10 +13,13 @@ ACameraPlayerController::ACameraPlayerController() {
 	APlayerController::bShowMouseCursor = 1;
 }
 
-ACameraPlayerPawn *camera;
+ACameraPlayerPawn* camera;
 
 void ACameraPlayerController::BeginPlay() {
 	camera = Cast<ACameraPlayerPawn>(GetPawn());
+	Rotation = camera->GetControlRotation();
+	ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+	RightVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
 }
 
 void ACameraPlayerController::Tick(float DeltaSeconds) {
@@ -30,22 +32,22 @@ void ACameraPlayerController::Tick(float DeltaSeconds) {
 		FVector location = camera->GetTargetLocation();
 
 		if (MousePosition.X <= 20) {
-			location.Y += camera->speed;
+			location -= RightVector * camera->speed;
 			camera->SetActorLocation(location);
 		}
 
-		if (MousePosition.X >= ViewportSize.X - 20) {
-			location.Y -= camera->speed;
+		if (MousePosition.X >= ViewportSize.X - 20) {	
+			location += RightVector * camera->speed;
 			camera->SetActorLocation(location);
 		}
 
 		if (MousePosition.Y <= 20) {
-			location.X -= camera->speed;
+			location += ForwardVector * camera->speed;
 			camera->SetActorLocation(location);
 		}
 
 		if (MousePosition.Y >= ViewportSize.Y - 20) {
-			location.X += camera->speed;
+			location -= ForwardVector * camera->speed;
 			camera->SetActorLocation(location);
 		}
 	}
