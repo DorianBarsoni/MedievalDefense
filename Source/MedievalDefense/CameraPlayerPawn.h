@@ -40,6 +40,8 @@ public:
 	void RightClickPressed();
 
 private:
+	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult);
+
 	void SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops);
 
 };

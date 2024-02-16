@@ -34,18 +34,9 @@ void ACameraPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 }
 
 void ACameraPlayerPawn::LeftMousePressed() {
-    APlayerController *PlayerController = Cast<APlayerController>(GetController());
-
-    FVector MouseWorldPosition, MouseWorldDirection;
-    PlayerController->DeprojectMousePositionToWorld(MouseWorldPosition, MouseWorldDirection);
-    FVector Direction = MouseWorldPosition + 10000.0 * MouseWorldDirection;
-
     FHitResult HitResult;
-    FCollisionQueryParams CollisionParams;
-    CollisionParams.AddIgnoredActor(this);
-    CollisionParams.AddIgnoredActor(GetController());
 
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
+    if (TraceLineFromCameraToMousePosition(HitResult)) {
 
         AActor* HitActor = HitResult.GetActor();
         if (HitActor) {
@@ -55,43 +46,44 @@ void ACameraPlayerPawn::LeftMousePressed() {
             FString name = HitActor->GetActorNameOrLabel();
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
 
+            SelectedTroops.Empty();
             if (Troop) {
-                TArray<ATroopCharacter*> NewSelectedTroops;
-                NewSelectedTroops.Add(Troop);
-                SelectTroops(NewSelectedTroops);
-                
+                SelectedTroops.Add(Troop);
             }
-            else {
-                SelectedTroops.Empty();
-            }
-
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("TArray num : %d"), SelectedTroops.Num()));
-            
+            //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("TArray num : %d"), SelectedTroops.Num()));
         }
-        DrawDebugLine(GetWorld(), MouseWorldPosition, Direction, FColor::Red, false, 5.0f, 0, 0.1f);
     }
 }
 
 void ACameraPlayerPawn::RightClickPressed() {
     if (!SelectedTroops.IsEmpty()) {
-        APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-        FVector MouseWorldPosition, MouseWorldDirection;
-        PlayerController->DeprojectMousePositionToWorld(MouseWorldPosition, MouseWorldDirection);
-        FVector Direction = MouseWorldPosition + 10000.0 * MouseWorldDirection;
-
         FHitResult HitResult;
-        FCollisionQueryParams CollisionParams;
-        CollisionParams.AddIgnoredActor(this);
-        CollisionParams.AddIgnoredActor(GetController());
-
-        if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
+    
+        if (TraceLineFromCameraToMousePosition(HitResult)) {
             for (auto Troop : SelectedTroops) {
                 ATroopController* TroopController = Cast<ATroopController>(Troop->GetController());
                 TroopController->MoveTroopToLocation(HitResult.ImpactPoint);
             }
         }
     }
+}
+
+bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult) {
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+    FVector MouseWorldPosition, MouseWorldDirection;
+    PlayerController->DeprojectMousePositionToWorld(MouseWorldPosition, MouseWorldDirection);
+    FVector Direction = MouseWorldPosition + 10000.0 * MouseWorldDirection;
+
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(this);
+    CollisionParams.AddIgnoredActor(GetController());
+
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
+        DrawDebugLine(GetWorld(), MouseWorldPosition, Direction, FColor::Red, false, 5.0f, 0, 0.1f);
+        return true;
+    }
+    return false;
 }
 
 void ACameraPlayerPawn::SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops) {
