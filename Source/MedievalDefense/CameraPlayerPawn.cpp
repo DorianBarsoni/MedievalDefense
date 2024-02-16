@@ -2,6 +2,7 @@
 #include "Components/BoxComponent.h"
 
 #include "TroopController.h"
+#include "AllyComponent.h"
 #include "Engine/World.h"
 
 ACameraPlayerPawn::ACameraPlayerPawn()
@@ -47,7 +48,7 @@ void ACameraPlayerPawn::LeftMousePressed() {
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
 
             SelectedTroops.Empty();
-            if (Troop) {
+            if (Troop && Troop->TeamComponent->IsA(UAllyComponent::StaticClass())) {
                 SelectedTroops.Add(Troop);
             }
             //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("TArray num : %d"), SelectedTroops.Num()));
@@ -62,7 +63,9 @@ void ACameraPlayerPawn::RightClickPressed() {
         if (TraceLineFromCameraToMousePosition(HitResult)) {
             for (auto Troop : SelectedTroops) {
                 ATroopController* TroopController = Cast<ATroopController>(Troop->GetController());
-                TroopController->MoveTroopToLocation(HitResult.ImpactPoint);
+                if (TroopController) {
+                    TroopController->MoveTroopToLocation(HitResult.ImpactPoint);
+                }
             }
         }
     }
