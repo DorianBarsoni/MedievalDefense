@@ -71,6 +71,28 @@ void ACameraPlayerPawn::RightClickPressed() {
     }
 }
 
+void ACameraPlayerPawn::RightClickHold() {
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+    FVector MouseWorldDirection;
+    PlayerController->DeprojectMousePositionToWorld(HoldAndReleaseCoordinates.Get<0>(), MouseWorldDirection);
+
+    DrawDebugLine(GetWorld(), HoldAndReleaseCoordinates.Get<0>(),
+        HoldAndReleaseCoordinates.Get<0>() + MouseWorldDirection*10000,
+        FColor::Orange, false, 10.0f, 0, 0.1f);
+}
+
+void ACameraPlayerPawn::RightClickHoldAndReleased() {
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+    FVector MouseWorldDirection;
+    PlayerController->DeprojectMousePositionToWorld(HoldAndReleaseCoordinates.Get<1>(), MouseWorldDirection);
+
+    DrawDebugLine(GetWorld(), HoldAndReleaseCoordinates.Get<1>(),
+        HoldAndReleaseCoordinates.Get<1>() + MouseWorldDirection * 10000,
+        FColor::Yellow, false, 10.0f, 0, 0.1f);
+}
+
 bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult) {
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
 

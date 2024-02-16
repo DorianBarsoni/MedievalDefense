@@ -23,6 +23,8 @@ public:
 
 	TArray<ATroopCharacter*> SelectedTroops;
 
+	TPair<FVector, FVector> HoldAndReleaseCoordinates;
+
 	ACameraPlayerPawn();
 
 protected:
@@ -38,6 +40,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RightClickPressed();
+
+	UFUNCTION(BlueprintCallable)
+	void RightClickHold();
+
+	UFUNCTION(BlueprintCallable)
+	void RightClickHoldAndReleased();
 
 private:
 	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult);
