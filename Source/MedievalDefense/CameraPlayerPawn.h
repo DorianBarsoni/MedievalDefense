@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LeftMousePressed();
 
+	UFUNCTION(BlueprintCallable)
+	void RightClickPressed();
+
 private:
 	void SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops);
 

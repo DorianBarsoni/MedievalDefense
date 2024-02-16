@@ -1,6 +1,7 @@
 #include "CameraPlayerPawn.h"
 #include "Components/BoxComponent.h"
 
+#include "TroopController.h"
 #include "Engine/World.h"
 
 ACameraPlayerPawn::ACameraPlayerPawn()
@@ -49,38 +50,48 @@ void ACameraPlayerPawn::LeftMousePressed() {
         AActor* HitActor = HitResult.GetActor();
         if (HitActor) {
             FVector HitLocation = HitResult.ImpactPoint;
-
-            FString Message = FString::Printf(TEXT("Collision à : X=%.2f, Y=%.2f, Z=%.2f"), HitLocation.X, HitLocation.Y, HitLocation.Z);
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, Message);
-
-            if (HitActor->IsA(ATroopCharacter::StaticClass())) {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString("True"));
-            }
-            else {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString("False"));
-            }
-
             ATroopCharacter *Troop = Cast<ATroopCharacter>(HitActor);
-            Message = FString::Printf(TEXT("TArray size : %d"), SelectedTroops.Num());
 
             FString name = HitActor->GetActorNameOrLabel();
-
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
 
             if (Troop) {
                 TArray<ATroopCharacter*> NewSelectedTroops;
                 NewSelectedTroops.Add(Troop);
                 SelectTroops(NewSelectedTroops);
-
-                Message = FString::Printf(TEXT("TArray size : %d, %d"), SelectedTroops.Num(), Troop->LifeComponent->GetLife());
+                
             }
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, Message);
+            else {
+                SelectedTroops.Empty();
+            }
+
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("TArray num : %d"), SelectedTroops.Num()));
+            
         }
-
         DrawDebugLine(GetWorld(), MouseWorldPosition, Direction, FColor::Red, false, 5.0f, 0, 0.1f);
-
     }
-    
+}
+
+void ACameraPlayerPawn::RightClickPressed() {
+    if (!SelectedTroops.IsEmpty()) {
+        APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+        FVector MouseWorldPosition, MouseWorldDirection;
+        PlayerController->DeprojectMousePositionToWorld(MouseWorldPosition, MouseWorldDirection);
+        FVector Direction = MouseWorldPosition + 10000.0 * MouseWorldDirection;
+
+        FHitResult HitResult;
+        FCollisionQueryParams CollisionParams;
+        CollisionParams.AddIgnoredActor(this);
+        CollisionParams.AddIgnoredActor(GetController());
+
+        if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
+            for (auto Troop : SelectedTroops) {
+                ATroopController* TroopController = Cast<ATroopController>(Troop->GetController());
+                TroopController->MoveTroopToLocation(HitResult.ImpactPoint);
+            }
+        }
+    }
 }
 
 void ACameraPlayerPawn::SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops) {
