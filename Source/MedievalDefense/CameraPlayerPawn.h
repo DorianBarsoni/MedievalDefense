@@ -21,6 +21,7 @@ public:
 	UPROPERTY()
 	FVector PreviousPosition;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ATroopCharacter*> SelectedTroops;
 
 	TPair<FVector, FVector> HoldAndReleaseCoordinates;
