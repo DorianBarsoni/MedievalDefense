@@ -43,14 +43,16 @@ public:
 	void RightClickPressed();
 
 	UFUNCTION(BlueprintCallable)
-	void RightClickHold();
+	void LeftClickHold();
 
 	UFUNCTION(BlueprintCallable)
-	void RightClickHoldAndReleased();
+	void LeftClickHoldAndReleased();
 
 private:
 	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult);
 
 	void SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops);
+
+	void UnselectTroops();
 
 };

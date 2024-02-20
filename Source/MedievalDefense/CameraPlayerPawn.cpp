@@ -47,8 +47,9 @@ void ACameraPlayerPawn::LeftMousePressed() {
             FString name = HitActor->GetActorNameOrLabel();
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
 
-            SelectedTroops.Empty();
+            UnselectTroops();
             if (Troop && Troop->TeamComponent->IsA(UAllyComponent::StaticClass())) {
+                Troop->GetMesh()->SetRenderCustomDepth(true);
                 SelectedTroops.Add(Troop);
             }
             //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("TArray num : %d"), SelectedTroops.Num()));
@@ -71,7 +72,7 @@ void ACameraPlayerPawn::RightClickPressed() {
     }
 }
 
-void ACameraPlayerPawn::RightClickHold() {
+void ACameraPlayerPawn::LeftClickHold() {
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
     FVector MouseWorldDirection;
@@ -82,7 +83,7 @@ void ACameraPlayerPawn::RightClickHold() {
         FColor::Orange, false, 10.0f, 0, 0.1f);
 }
 
-void ACameraPlayerPawn::RightClickHoldAndReleased() {
+void ACameraPlayerPawn::LeftClickHoldAndReleased() {
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
     FVector MouseWorldDirection;
@@ -113,5 +114,13 @@ bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult
 
 void ACameraPlayerPawn::SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops) {
     SelectedTroops = NewSelectedTroops;
+}
+
+void ACameraPlayerPawn::UnselectTroops() {
+    for (auto Troop : SelectedTroops) {
+        Troop->GetMesh()->SetRenderCustomDepth(false);
+    }
+
+    SelectedTroops.Empty();
 }
 
