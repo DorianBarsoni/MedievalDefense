@@ -80,15 +80,23 @@ void ACameraPlayerPawn::LeftClickHold() {
     if (TraceLineFromCameraToMousePosition(HitResult)) {
         if (isFirstHold) {
             HoldAndReleaseCoordinates.Get<0>() = HitResult.ImpactPoint;
+            HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
             isFirstHold = false;
         }
         else {
             HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
         }
+
+        float x_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().X - HoldAndReleaseCoordinates.Get<0>().X);
+        float y_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Y - HoldAndReleaseCoordinates.Get<0>().Y);
+        FVector middlePoint = 0.5 * (HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
+        FVector HalfSize = FVector(x_len, y_len, 1);
+
+        DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Green, false, 0.05, 0, 5.0);
     }
 }
 
-FVector ACameraPlayerPawn::LeftClickHoldAndReleased() {
+void ACameraPlayerPawn::LeftClickHoldAndReleased() {
     FHitResult HitResult;
     if (TraceLineFromCameraToMousePosition(HitResult)) {
         HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
@@ -96,49 +104,37 @@ FVector ACameraPlayerPawn::LeftClickHoldAndReleased() {
         
         FVector middlePoint = 0.5*(HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
 
-
         float x_len = 0.5*FMath::Abs(HoldAndReleaseCoordinates.Get<1>().X - HoldAndReleaseCoordinates.Get<0>().X);
         float y_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Y - HoldAndReleaseCoordinates.Get<0>().Y);
         float z_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Z - HoldAndReleaseCoordinates.Get<0>().Z);
-        FVector HalfSize = FVector(x_len, y_len, 5000);
-
+        FVector HalfSize = FVector(x_len, y_len, 10000);
 
         TArray<FHitResult> HitResults;
 
-        UKismetSystemLibrary::BoxTraceMulti(
-            this,
-            GetActorLocation(),
-            middlePoint,
-            HalfSize,
-            FRotator(0, 0, 0),
-            UEngineTypes::ConvertToTraceType(ECC_Pawn),
-            false,
-            TArray<AActor*>(),
-            EDrawDebugTrace::Persistent,
-            HitResults,
-            true);
+        FCollisionShape Shape = FCollisionShape::MakeBox(HalfSize);
+        TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+        ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
 
-        for (const FHitResult& HitResult2 : HitResults) {
-            AActor* HitActor = HitResult2.GetActor();
+        TArray<AActor*> ActorsToIgnore;
+        ActorsToIgnore.Add(this);
 
-            FString name = HitActor->GetActorNameOrLabel();
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
+        TArray<AActor*> OutActors;
 
-            if (HitActor && HitActor->IsA(ATroopCharacter::StaticClass())) {
-                ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(HitActor);
-                if (TroopCharacter) {
-                    SelectedTroops.Add(TroopCharacter);
+        UnselectTroops();
+        if (UKismetSystemLibrary::BoxOverlapActors(this, middlePoint, HalfSize, ObjectTypes, ATroopCharacter::StaticClass(), ActorsToIgnore, OutActors)) {
+            for (auto Actor : OutActors) {
+                if (Actor && Actor->IsA(ATroopCharacter::StaticClass())) {
+                    ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(Actor);
+                    if (TroopCharacter && TroopCharacter->TeamComponent->IsA(UAllyComponent::StaticClass())) {
+                        SelectedTroops.Add(TroopCharacter);
+                        TroopCharacter->GetMesh()->SetRenderCustomDepth(true);
+                    }
                 }
             }
         }
 
         DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Orange, false, 10.0f);
-
-        return middlePoint;
-        
     }
-
-    return FVector();
 }
 
 bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult) {
@@ -161,6 +157,10 @@ bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult
 
 void ACameraPlayerPawn::SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops) {
     SelectedTroops = NewSelectedTroops;
+
+    for (auto Troop : SelectedTroops) {
+        Troop->GetMesh()->SetRenderCustomDepth(true);
+    }
 }
 
 void ACameraPlayerPawn::UnselectTroops() {

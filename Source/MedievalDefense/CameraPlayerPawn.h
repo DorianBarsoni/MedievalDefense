@@ -48,7 +48,7 @@ public:
 	void LeftClickHold();
 
 	UFUNCTION(BlueprintCallable)
-	FVector LeftClickHoldAndReleased();
+	void LeftClickHoldAndReleased();
 
 private:
 	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult);
