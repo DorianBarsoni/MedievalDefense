@@ -52,7 +52,6 @@ void ACameraPlayerPawn::LeftMousePressed() {
                 Troop->GetMesh()->SetRenderCustomDepth(true);
                 SelectedTroops.Add(Troop);
             }
-            //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("TArray num : %d"), SelectedTroops.Num()));
         }
     }
 }

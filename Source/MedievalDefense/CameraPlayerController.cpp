@@ -13,6 +13,8 @@ ACameraPlayerController::ACameraPlayerController() {
 ACameraPlayerPawn* camera;
 
 void ACameraPlayerController::BeginPlay() {
+	Super::BeginPlay();
+
 	camera = Cast<ACameraPlayerPawn>(GetPawn());
 	Rotation = camera->GetControlRotation();
 	ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
