@@ -4,6 +4,8 @@
 #include "TroopController.h"
 #include "AllyComponent.h"
 #include "Engine/World.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Engine/EngineTypes.h"
 
 ACameraPlayerPawn::ACameraPlayerPawn()
 {
@@ -15,6 +17,7 @@ ACameraPlayerPawn::ACameraPlayerPawn()
     BoxComponent->SetCollisionProfileName(TEXT("Pawn"));
 
     speed = 100;
+    isFirstHold = true;
 }
 
 void ACameraPlayerPawn::BeginPlay()
@@ -72,25 +75,70 @@ void ACameraPlayerPawn::RightClickPressed() {
 }
 
 void ACameraPlayerPawn::LeftClickHold() {
-    APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
-    FVector MouseWorldDirection;
-    PlayerController->DeprojectMousePositionToWorld(HoldAndReleaseCoordinates.Get<0>(), MouseWorldDirection);
-
-    DrawDebugLine(GetWorld(), HoldAndReleaseCoordinates.Get<0>(),
-        HoldAndReleaseCoordinates.Get<0>() + MouseWorldDirection*10000,
-        FColor::Orange, false, 10.0f, 0, 0.1f);
+    FHitResult HitResult;
+    if (TraceLineFromCameraToMousePosition(HitResult)) {
+        if (isFirstHold) {
+            HoldAndReleaseCoordinates.Get<0>() = HitResult.ImpactPoint;
+            isFirstHold = false;
+        }
+        else {
+            HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
+        }
+    }
 }
 
-void ACameraPlayerPawn::LeftClickHoldAndReleased() {
-    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+FVector ACameraPlayerPawn::LeftClickHoldAndReleased() {
+    FHitResult HitResult;
+    if (TraceLineFromCameraToMousePosition(HitResult)) {
+        HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
+        isFirstHold = true;
+        
+        FVector middlePoint = 0.5*(HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
 
-    FVector MouseWorldDirection;
-    PlayerController->DeprojectMousePositionToWorld(HoldAndReleaseCoordinates.Get<1>(), MouseWorldDirection);
 
-    DrawDebugLine(GetWorld(), HoldAndReleaseCoordinates.Get<1>(),
-        HoldAndReleaseCoordinates.Get<1>() + MouseWorldDirection * 10000,
-        FColor::Yellow, false, 10.0f, 0, 0.1f);
+        float x_len = 0.5*FMath::Abs(HoldAndReleaseCoordinates.Get<1>().X - HoldAndReleaseCoordinates.Get<0>().X);
+        float y_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Y - HoldAndReleaseCoordinates.Get<0>().Y);
+        float z_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Z - HoldAndReleaseCoordinates.Get<0>().Z);
+        FVector HalfSize = FVector(x_len, y_len, 5000);
+
+
+        TArray<FHitResult> HitResults;
+
+        UKismetSystemLibrary::BoxTraceMulti(
+            this,
+            GetActorLocation(),
+            middlePoint,
+            HalfSize,
+            FRotator(0, 0, 0),
+            UEngineTypes::ConvertToTraceType(ECC_Pawn),
+            false,
+            TArray<AActor*>(),
+            EDrawDebugTrace::Persistent,
+            HitResults,
+            true);
+
+        for (const FHitResult& HitResult2 : HitResults) {
+            AActor* HitActor = HitResult2.GetActor();
+
+            FString name = HitActor->GetActorNameOrLabel();
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
+
+            if (HitActor && HitActor->IsA(ATroopCharacter::StaticClass())) {
+                ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(HitActor);
+                if (TroopCharacter) {
+                    SelectedTroops.Add(TroopCharacter);
+                }
+            }
+        }
+
+        DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Orange, false, 10.0f);
+
+        return middlePoint;
+        
+    }
+
+    return FVector();
 }
 
 bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult) {

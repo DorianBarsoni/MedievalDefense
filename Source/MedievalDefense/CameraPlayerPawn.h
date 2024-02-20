@@ -26,6 +26,8 @@ public:
 
 	TPair<FVector, FVector> HoldAndReleaseCoordinates;
 
+	bool isFirstHold;
+
 	ACameraPlayerPawn();
 
 protected:
@@ -46,7 +48,7 @@ public:
 	void LeftClickHold();
 
 	UFUNCTION(BlueprintCallable)
-	void LeftClickHoldAndReleased();
+	FVector LeftClickHoldAndReleased();
 
 private:
 	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult);
