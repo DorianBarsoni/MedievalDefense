@@ -51,7 +51,7 @@ public:
 	void LeftClickHoldAndReleased();
 
 private:
-	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult);
+	bool TraceLineFromCameraToMousePosition(FHitResult &HitResult, bool showHit);
 
 	void SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops);
 

@@ -40,7 +40,7 @@ void ACameraPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void ACameraPlayerPawn::LeftMousePressed() {
     FHitResult HitResult;
 
-    if (TraceLineFromCameraToMousePosition(HitResult)) {
+    if (TraceLineFromCameraToMousePosition(HitResult, true)) {
 
         AActor* HitActor = HitResult.GetActor();
         if (HitActor) {
@@ -63,7 +63,7 @@ void ACameraPlayerPawn::RightClickPressed() {
     if (!SelectedTroops.IsEmpty()) {
         FHitResult HitResult;
     
-        if (TraceLineFromCameraToMousePosition(HitResult)) {
+        if (TraceLineFromCameraToMousePosition(HitResult, true)) {
             for (auto Troop : SelectedTroops) {
                 ATroopController* TroopController = Cast<ATroopController>(Troop->GetController());
                 if (TroopController) {
@@ -77,7 +77,7 @@ void ACameraPlayerPawn::RightClickPressed() {
 void ACameraPlayerPawn::LeftClickHold() {
 
     FHitResult HitResult;
-    if (TraceLineFromCameraToMousePosition(HitResult)) {
+    if (TraceLineFromCameraToMousePosition(HitResult, false)) {
         if (isFirstHold) {
             HoldAndReleaseCoordinates.Get<0>() = HitResult.ImpactPoint;
             HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
@@ -98,7 +98,7 @@ void ACameraPlayerPawn::LeftClickHold() {
 
 void ACameraPlayerPawn::LeftClickHoldAndReleased() {
     FHitResult HitResult;
-    if (TraceLineFromCameraToMousePosition(HitResult)) {
+    if (TraceLineFromCameraToMousePosition(HitResult, false)) {
         HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
         isFirstHold = true;
         
@@ -133,11 +133,11 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
             }
         }
 
-        DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Orange, false, 10.0f);
+        //DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Orange, false, 10.0f);
     }
 }
 
-bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult) {
+bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult, bool showHit) {
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
     FVector MouseWorldPosition, MouseWorldDirection;
@@ -149,7 +149,9 @@ bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult
     CollisionParams.AddIgnoredActor(GetController());
 
     if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
-        DrawDebugLine(GetWorld(), MouseWorldPosition, Direction, FColor::Red, false, 5.0f, 0, 0.1f);
+        if (showHit) {
+            DrawDebugLine(GetWorld(), MouseWorldPosition, Direction, FColor::Red, false, 5.0f, 0, 0.1f);
+        }
         return true;
     }
     return false;
