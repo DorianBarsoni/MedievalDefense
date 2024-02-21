@@ -113,7 +113,7 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
 
         FCollisionShape Shape = FCollisionShape::MakeBox(HalfSize);
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-        ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
+        ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 
         TArray<AActor*> ActorsToIgnore;
         ActorsToIgnore.Add(this);
@@ -123,7 +123,7 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
         UnselectTroops();
         if (UKismetSystemLibrary::BoxOverlapActors(this, middlePoint, HalfSize, ObjectTypes, ATroopCharacter::StaticClass(), ActorsToIgnore, OutActors)) {
             for (auto Actor : OutActors) {
-                if (Actor && Actor->IsA(ATroopCharacter::StaticClass())) {
+                if (IsValid(Actor) && Actor->GetClass()->IsChildOf(ATroopCharacter::StaticClass())) {
                     ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(Actor);
                     if (TroopCharacter && TroopCharacter->TeamComponent->IsA(UAllyComponent::StaticClass())) {
                         SelectedTroops.Add(TroopCharacter);
