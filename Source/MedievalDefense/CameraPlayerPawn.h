@@ -57,4 +57,6 @@ private:
 
 	void UnselectTroops();
 
+	FVector getMiddlePoint();
+
 };

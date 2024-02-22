@@ -1,15 +1,13 @@
 #include "TroopController.h"
-#include "Perception/AISenseConfig_Sight.h"
-#include "Perception/AIPerceptionTypes.h"
+#include "TroopCharacter.h"
 
 
 ATroopController::ATroopController() {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
-
-	UAISenseConfig_Sight* SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 
 	SightConfig->SightRadius = 200.0f;
-	SightConfig->LoseSightRadius = 400.0f;
+	SightConfig->LoseSightRadius = 200.0f;
 	SightConfig->PeripheralVisionAngleDegrees = 360.0f;
 
 	FAISenseAffiliationFilter SenseAffiliationFilter;
@@ -23,8 +21,21 @@ ATroopController::ATroopController() {
 
 void ATroopController::BeginPlay() {
 	Super::BeginPlay();
+
 }
 
+void ATroopController::OnPossess(APawn* InPawn) {
+	Super::OnPossess(InPawn);
+
+	/*if (AActor* MyPawn = GetPawn()) {
+		if (ATroopCharacter* Troop = Cast<ATroopCharacter>(MyPawn)) {
+			SightConfig->SightRadius = Troop->TroopDataAsset->Range;
+			SightConfig->LoseSightRadius = Troop->TroopDataAsset->Range;
+
+			AIPerceptionComponent->ConfigureSense(*SightConfig);
+		}
+	}*/
+}
 
 void ATroopController::MoveTroopToLocation(FVector location) {
 	this->MoveToLocation(location);

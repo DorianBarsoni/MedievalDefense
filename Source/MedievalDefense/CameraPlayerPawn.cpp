@@ -89,10 +89,10 @@ void ACameraPlayerPawn::LeftClickHold() {
 
         float x_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().X - HoldAndReleaseCoordinates.Get<0>().X);
         float y_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Y - HoldAndReleaseCoordinates.Get<0>().Y);
-        FVector middlePoint = 0.5 * (HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
+        float z_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Z - HoldAndReleaseCoordinates.Get<0>().Z);
         FVector HalfSize = FVector(x_len, y_len, 1);
 
-        DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Green, false, 0.05, 0, 5.0);
+        DrawDebugBox(GetWorld(), getMiddlePoint(), HalfSize, FQuat::Identity, FColor::Green, false, 0.05, 0, 5.0);
     }
 }
 
@@ -101,12 +101,9 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
     if (TraceLineFromCameraToMousePosition(HitResult, false)) {
         HoldAndReleaseCoordinates.Get<1>() = HitResult.ImpactPoint;
         isFirstHold = true;
-        
-        FVector middlePoint = 0.5*(HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
 
-        float x_len = 0.5*FMath::Abs(HoldAndReleaseCoordinates.Get<1>().X - HoldAndReleaseCoordinates.Get<0>().X);
+        float x_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().X - HoldAndReleaseCoordinates.Get<0>().X);
         float y_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Y - HoldAndReleaseCoordinates.Get<0>().Y);
-        float z_len = 0.5 * FMath::Abs(HoldAndReleaseCoordinates.Get<1>().Z - HoldAndReleaseCoordinates.Get<0>().Z);
         FVector HalfSize = FVector(x_len, y_len, 10000);
 
         TArray<FHitResult> HitResults;
@@ -121,7 +118,7 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
         TArray<AActor*> OutActors;
 
         UnselectTroops();
-        if (UKismetSystemLibrary::BoxOverlapActors(this, middlePoint, HalfSize, ObjectTypes, ATroopCharacter::StaticClass(), ActorsToIgnore, OutActors)) {
+        if (UKismetSystemLibrary::BoxOverlapActors(this, getMiddlePoint(), HalfSize, ObjectTypes, ATroopCharacter::StaticClass(), ActorsToIgnore, OutActors)) {
             for (auto Actor : OutActors) {
                 if (IsValid(Actor) && Actor->GetClass()->IsChildOf(ATroopCharacter::StaticClass())) {
                     ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(Actor);
@@ -171,5 +168,9 @@ void ACameraPlayerPawn::UnselectTroops() {
     }
 
     SelectedTroops.Empty();
+}
+
+FVector ACameraPlayerPawn::getMiddlePoint() {
+    return 0.5 * (HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
 }
 
