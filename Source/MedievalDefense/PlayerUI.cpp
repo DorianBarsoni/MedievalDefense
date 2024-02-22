@@ -34,7 +34,7 @@ FVector UPlayerUI::getSpawnPoint(FVector SpawnPoint) {
         if (NavigationSystemV1) {
             FNavLocation RandomLocation;
             if (NavigationSystemV1->GetRandomReachablePointInRadius(SpawnPoint, SpawnRadius, RandomLocation)) {
-                return RandomLocation.Location + FVector(0, 0, 90);
+                return RandomLocation.Location + FVector(0, 0, 100);
             } else { UE_LOG(LogTemp, Error, TEXT("GetReachablePoint")); }
         } else { UE_LOG(LogTemp, Error, TEXT("NavSystemV1")); }
     }

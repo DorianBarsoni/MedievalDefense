@@ -1,34 +1,37 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "TroopCharacter.h"
 #include "AllyComponent.h"
 #include "EnemyComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
 ATroopCharacter::ATroopCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	LifeComponent = CreateDefaultSubobject<ULifeComponent>(TEXT("LifeComponent"));
 	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("TeamComponent"));
+	TroopDataAsset = CreateDefaultSubobject<UTroopDataAsset>(TEXT("TroopDataAsset"));
 }
 
-// Called when the game starts or when spawned
 void ATroopCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (LifeComponent) {
+		LifeComponent->SetLife(TroopDataAsset->LifePoint);
+	} else UE_LOG(LogTemp, Error, TEXT("LifeComponent is not valid in ATroopCharacter::BeginPlay"));
+	
+	UCharacterMovementComponent* MyCharacterMovement = GetCharacterMovement();
+	if (MyCharacterMovement) {
+		MyCharacterMovement->MaxWalkSpeed = TroopDataAsset->SpeedMovement;
+	} else UE_LOG(LogTemp, Error, TEXT("CharacterMovement is not valid in ATroopCharacter::BeginPlay"));
 	
 }
 
-// Called every frame
 void ATroopCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
 void ATroopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
