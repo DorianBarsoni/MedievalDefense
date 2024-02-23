@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,9 +7,6 @@
 #include "Components/Image.h"
 #include "PlayerUI.generated.h"
 
-/**
- * 
- */
 UCLASS(Blueprintable)
 class MEDIEVALDEFENSE_API UPlayerUI : public UUserWidget
 {

@@ -9,6 +9,7 @@ ATroopCharacter::ATroopCharacter()
 	LifeComponent = CreateDefaultSubobject<ULifeComponent>(TEXT("LifeComponent"));
 	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("TeamComponent"));
 	TroopDataAsset = CreateDefaultSubobject<UTroopDataAsset>(TEXT("TroopDataAsset"));
+	HealthBarWidgetComponent = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("HealthBarWidgetComponent"));
 }
 
 void ATroopCharacter::BeginPlay()
@@ -16,14 +17,20 @@ void ATroopCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	if (LifeComponent) {
-		LifeComponent->SetLife(TroopDataAsset->LifePoint);
+		LifeComponent->Life = TroopDataAsset->LifePoint;
+		LifeComponent->MaxLife = TroopDataAsset->MaxLifePoint;
 	} else UE_LOG(LogTemp, Error, TEXT("LifeComponent is not valid in ATroopCharacter::BeginPlay"));
 	
 	UCharacterMovementComponent* MyCharacterMovement = GetCharacterMovement();
 	if (MyCharacterMovement) {
 		MyCharacterMovement->MaxWalkSpeed = TroopDataAsset->SpeedMovement;
 	} else UE_LOG(LogTemp, Error, TEXT("CharacterMovement is not valid in ATroopCharacter::BeginPlay"));
-	
+
+	HealthBarWidgetComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	HealthBarWidgetComponent->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
+
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Troop : %d %d"), TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint));
 }
 
 void ATroopCharacter::Tick(float DeltaTime)
@@ -56,5 +63,10 @@ void ATroopCharacter::MakeTroopEnemy() {
 		TeamComponent = NewObject<UEnemyComponent>(this, TEXT("EnemyComponent"));
 		TeamComponent->RegisterComponent();
 	}
+}
+
+void ATroopCharacter::GetDamage(int damagePoints) {
+	LifeComponent->GetDamage(damagePoints);
+	HealthBarWidgetComponent->HealthBarWidget->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
 }
 

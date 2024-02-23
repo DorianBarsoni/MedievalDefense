@@ -5,6 +5,7 @@
 #include "LifeComponent.h"
 #include "TroopDataAsset.h"
 #include "TeamComponent.h"
+#include "HealthBarWidgetComponent.h"
 #include "TroopCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -13,6 +14,7 @@ class MEDIEVALDEFENSE_API ATroopCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ULifeComponent *LifeComponent;
 
@@ -21,6 +23,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTroopDataAsset *TroopDataAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UHealthBarWidgetComponent* HealthBarWidgetComponent;
 	
 	ATroopCharacter();
 
@@ -37,5 +42,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void MakeTroopEnemy();
+
+	UFUNCTION(BlueprintCallable)
+	void GetDamage(int damagePoints);
 
 };

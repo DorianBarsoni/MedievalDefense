@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "HealthBar.h"
 #include "LifeComponent.generated.h"
 
 
@@ -10,12 +11,14 @@ class MEDIEVALDEFENSE_API ULifeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int life;
-
 public:	
 	ULifeComponent();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Life;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxLife;
 
 protected:
 	virtual void BeginPlay() override;
@@ -24,14 +27,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Components")
-	void GetDamage(int damagePoint);
-
-	UFUNCTION(BlueprintCallable, Category = "Components")
-	void SetLife(int lifePoint);
-
-	UFUNCTION(BlueprintCallable, Category = "Components")
-	int GetLife();
-	
-	/*UFUNCTION(BlueprintCallable, Category = "Components")
-	virtual void Die() PURE_VIRTUAL(ULifeComponent::Die,);*/
+	void GetDamage(int damagePoints);
 };
