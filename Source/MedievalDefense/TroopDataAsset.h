@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "GameplayTagContainer.h"
 #include "TroopDataAsset.generated.h"
 
 UCLASS(Blueprintable)
@@ -10,6 +11,9 @@ class MEDIEVALDEFENSE_API UTroopDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag TeamTag;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float SpeedMovement;
 

@@ -7,7 +7,7 @@
 void UPlayerUI::onKnightButtonClicked(FVector SpawnPoint) {
     if (KnightActor) {         
         FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
         AActor* NewTroopCharacter = GetWorld()->SpawnActor<AActor>(KnightActor, getSpawnPoint(SpawnPoint), FRotator::ZeroRotator, SpawnParams);
     } else {
@@ -42,5 +42,5 @@ FVector UPlayerUI::getSpawnPoint(FVector SpawnPoint) {
         UE_LOG(LogTemp, Error, TEXT("NavSystem"));
     }
 
-    return FVector(0, 0, 0);
+    return SpawnPoint;
 }

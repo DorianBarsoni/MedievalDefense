@@ -51,7 +51,7 @@ void ACameraPlayerPawn::LeftMousePressed() {
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
 
             UnselectTroops();
-            if (Troop && Troop->TeamComponent->IsA(UAllyComponent::StaticClass())) {
+            if (Troop && Troop->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
                 Troop->GetMesh()->SetRenderCustomDepth(true);
                 SelectedTroops.Add(Troop);
             }
@@ -122,7 +122,7 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
             for (auto Actor : OutActors) {
                 if (IsValid(Actor) && Actor->GetClass()->IsChildOf(ATroopCharacter::StaticClass())) {
                     ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(Actor);
-                    if (TroopCharacter && TroopCharacter->TeamComponent->IsA(UAllyComponent::StaticClass())) {
+                    if (TroopCharacter && TroopCharacter->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
                         SelectedTroops.Add(TroopCharacter);
                         TroopCharacter->GetMesh()->SetRenderCustomDepth(true);
                     }

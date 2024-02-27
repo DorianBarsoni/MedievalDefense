@@ -8,7 +8,6 @@ ATroopCharacter::ATroopCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	LifeComponent = CreateDefaultSubobject<ULifeComponent>(TEXT("LifeComponent"));
-	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("TeamComponent"));
 	TroopDataAsset = CreateDefaultSubobject<UTroopDataAsset>(TEXT("TroopDataAsset"));
 	HealthComponentWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
 	//HealthBarWidgetComponent = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("HealthBarWidgetComponent"));
@@ -45,26 +44,6 @@ void ATroopCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-}
-
-void ATroopCharacter::MakeTroopAlly() {
-	UAllyComponent* AllyComponent = Cast<UAllyComponent>(TeamComponent);
-
-	if (!AllyComponent)
-	{
-		TeamComponent = NewObject<UAllyComponent>(this, TEXT("AllyComponent"));
-		TeamComponent->RegisterComponent();
-	}
-}
-
-void ATroopCharacter::MakeTroopEnemy() {
-	UEnemyComponent* EnemyComponent = Cast<UEnemyComponent>(TeamComponent);
-
-	if (!EnemyComponent)
-	{
-		TeamComponent = NewObject<UEnemyComponent>(this, TEXT("EnemyComponent"));
-		TeamComponent->RegisterComponent();
-	}
 }
 
 void ATroopCharacter::GetDamage(int damagePoints) {
