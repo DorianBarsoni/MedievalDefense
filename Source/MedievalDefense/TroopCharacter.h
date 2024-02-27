@@ -5,7 +5,7 @@
 #include "LifeComponent.h"
 #include "TroopDataAsset.h"
 #include "TeamComponent.h"
-#include "HealthBarWidgetComponent.h"
+#include "Components/WidgetComponent.h"
 #include "TroopCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -25,7 +25,9 @@ public:
 	UTroopDataAsset *TroopDataAsset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UHealthBarWidgetComponent* HealthBarWidgetComponent;
+	UWidgetComponent* HealthComponentWidget;
+
+	UHealthBar* WidgetAsHealthBar;
 	
 	ATroopCharacter();
 

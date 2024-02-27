@@ -1,6 +1,7 @@
 #include "TroopCharacter.h"
 #include "AllyComponent.h"
 #include "EnemyComponent.h"
+#include "HealthBar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ATroopCharacter::ATroopCharacter()
@@ -9,7 +10,8 @@ ATroopCharacter::ATroopCharacter()
 	LifeComponent = CreateDefaultSubobject<ULifeComponent>(TEXT("LifeComponent"));
 	TeamComponent = CreateDefaultSubobject<UTeamComponent>(TEXT("TeamComponent"));
 	TroopDataAsset = CreateDefaultSubobject<UTroopDataAsset>(TEXT("TroopDataAsset"));
-	HealthBarWidgetComponent = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("HealthBarWidgetComponent"));
+	HealthComponentWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
+	//HealthBarWidgetComponent = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("HealthBarWidgetComponent"));
 }
 
 void ATroopCharacter::BeginPlay()
@@ -26,8 +28,14 @@ void ATroopCharacter::BeginPlay()
 		MyCharacterMovement->MaxWalkSpeed = TroopDataAsset->SpeedMovement;
 	} else UE_LOG(LogTemp, Error, TEXT("CharacterMovement is not valid in ATroopCharacter::BeginPlay"));
 
+	/*
 	HealthBarWidgetComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	HealthBarWidgetComponent->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
+	*/
+
+	HealthComponentWidget->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	WidgetAsHealthBar = Cast<UHealthBar>(HealthComponentWidget->GetWidget());
+	WidgetAsHealthBar->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
 
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Troop : %d %d"), TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint));
@@ -67,6 +75,7 @@ void ATroopCharacter::MakeTroopEnemy() {
 
 void ATroopCharacter::GetDamage(int damagePoints) {
 	LifeComponent->GetDamage(damagePoints);
-	HealthBarWidgetComponent->HealthBarWidget->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
+	WidgetAsHealthBar->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
+	//HealthBarWidgetComponent->HealthBarWidget->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
 }
 

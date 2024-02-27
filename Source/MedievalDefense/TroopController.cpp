@@ -27,14 +27,13 @@ void ATroopController::BeginPlay() {
 void ATroopController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 
-	/*if (AActor* MyPawn = GetPawn()) {
-		if (ATroopCharacter* Troop = Cast<ATroopCharacter>(MyPawn)) {
-			SightConfig->SightRadius = Troop->TroopDataAsset->Range;
-			SightConfig->LoseSightRadius = Troop->TroopDataAsset->Range;
+	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(InPawn)) {
+		SightConfig->SightRadius = Troop->TroopDataAsset->Range;
+		SightConfig->LoseSightRadius = Troop->TroopDataAsset->Range;
 
-			AIPerceptionComponent->ConfigureSense(*SightConfig);
-		}
-	}*/
+		AIPerceptionComponent->ConfigureSense(*SightConfig);
+	}
+	
 }
 
 void ATroopController::MoveTroopToLocation(FVector location) {
@@ -44,12 +43,10 @@ void ATroopController::MoveTroopToLocation(FVector location) {
 void ATroopController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus) {
 	if (Stimulus.WasSuccessfullySensed() && Stimulus.Strength > 0.0f) {
 		if (Stimulus.StimulusLocation != FVector::ZeroVector) {
-			float DistanceToActor = FVector::Distance(GetPawn()->GetActorLocation(), Stimulus.StimulusLocation);
+			//float DistanceToActor = FVector::Distance(GetPawn()->GetActorLocation(), Stimulus.StimulusLocation);
 
-			if (DistanceToActor <= 200.0f) {
-				if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Actor!"));
-			}
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Actor!"));
 		}
 	}
 }

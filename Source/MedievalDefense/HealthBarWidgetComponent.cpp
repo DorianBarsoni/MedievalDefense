@@ -1,13 +1,13 @@
 #include "HealthBarWidgetComponent.h"
 
 UHealthBarWidgetComponent::UHealthBarWidgetComponent() {
-	SetWidgetClass(HealthWidgetTemplate);
 }
 
 void UHealthBarWidgetComponent::BeginPlay() {
 	Super::BeginPlay();
 
 	HealthBarWidget = CreateWidget<UHealthBar>(GetWorld(), HealthWidgetTemplate, FName("HealthBarWidget"));
+	SetWidgetClass(HealthWidgetTemplate);
 }
 
 void UHealthBarWidgetComponent::ChangeHealthPoints(int healthPoints, int maxHealth) {
