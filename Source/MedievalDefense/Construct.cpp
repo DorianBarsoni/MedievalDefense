@@ -1,27 +1,26 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Construct.h"
 
-// Sets default values
-AConstruct::AConstruct()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+AConstruct::AConstruct() {
 	PrimaryActorTick.bCanEverTick = true;
 	LifeComponent = CreateDefaultSubobject<ULifeComponent>(TEXT("LifeComponent"));
-
+	HealthComponentWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
 }
 
-// Called when the game starts or when spawned
-void AConstruct::BeginPlay()
-{
+void AConstruct::BeginPlay() {
 	Super::BeginPlay();
-	
+
+	if (LifeComponent) {
+		LifeComponent->Life = ConstructDataAsset->LifePoints;
+		LifeComponent->MaxLife = ConstructDataAsset->MaxLifePoints;
+	} else UE_LOG(LogTemp, Error, TEXT("LifeComponent is not valid in AConstruct::BeginPlay"));
+
+	if (HealthComponentWidget) {
+		WidgetAsHealthBar = Cast<UHealthBar>(HealthComponentWidget->GetWidget());
+		WidgetAsHealthBar->ChangeHealthPoints(ConstructDataAsset->LifePoints, ConstructDataAsset->MaxLifePoints);
+	} else UE_LOG(LogTemp, Error, TEXT("HealthComponentWidget error"));	
 }
 
-// Called every frame
-void AConstruct::Tick(float DeltaTime)
-{
+void AConstruct::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 }

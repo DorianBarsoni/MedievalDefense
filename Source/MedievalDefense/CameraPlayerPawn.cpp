@@ -1,6 +1,5 @@
 #include "CameraPlayerPawn.h"
 #include "Components/BoxComponent.h"
-
 #include "TroopController.h"
 #include "Engine/World.h"
 #include "Kismet/KismetSystemLibrary.h"
