@@ -51,6 +51,7 @@ void ACameraPlayerPawn::LeftMousePressed() {
             UnselectTroops();
             if (Troop && Troop->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
                 Troop->GetMesh()->SetRenderCustomDepth(true);
+                Troop->WidgetAsHealthBar->HealthBar->SetVisibility(ESlateVisibility::Visible);
                 SelectedTroops.Add(Troop);
             }
         }
@@ -122,6 +123,7 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
                     ATroopCharacter* TroopCharacter = Cast<ATroopCharacter>(Actor);
                     if (TroopCharacter && TroopCharacter->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
                         SelectedTroops.Add(TroopCharacter);
+                        TroopCharacter->WidgetAsHealthBar->HealthBar->SetVisibility(ESlateVisibility::Visible);
                         TroopCharacter->GetMesh()->SetRenderCustomDepth(true);
                     }
                 }
@@ -156,12 +158,14 @@ void ACameraPlayerPawn::SelectTroops(TArray<ATroopCharacter*> NewSelectedTroops)
     SelectedTroops = NewSelectedTroops;
 
     for (auto Troop : SelectedTroops) {
+        Troop->WidgetAsHealthBar->HealthBar->SetVisibility(ESlateVisibility::Visible);
         Troop->GetMesh()->SetRenderCustomDepth(true);
     }
 }
 
 void ACameraPlayerPawn::UnselectTroops() {
     for (auto Troop : SelectedTroops) {
+        Troop->WidgetAsHealthBar->HealthBar->SetVisibility(ESlateVisibility::Hidden);
         Troop->GetMesh()->SetRenderCustomDepth(false);
     }
 
