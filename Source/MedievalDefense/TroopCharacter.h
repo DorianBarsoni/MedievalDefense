@@ -4,7 +4,6 @@
 #include "GameFramework/Character.h"
 #include "LifeComponent.h"
 #include "TroopDataAsset.h"
-#include "TeamComponent.h"
 #include "Components/WidgetComponent.h"
 #include "TroopCharacter.generated.h"
 

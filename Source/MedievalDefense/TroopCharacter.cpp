@@ -1,6 +1,4 @@
 #include "TroopCharacter.h"
-#include "AllyComponent.h"
-#include "EnemyComponent.h"
 #include "HealthBar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 

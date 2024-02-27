@@ -2,7 +2,6 @@
 #include "Components/BoxComponent.h"
 
 #include "TroopController.h"
-#include "AllyComponent.h"
 #include "Engine/World.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/EngineTypes.h"
