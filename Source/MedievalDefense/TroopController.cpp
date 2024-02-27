@@ -4,7 +4,7 @@
 
 ATroopController::ATroopController() {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
-	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+	UAISenseConfig_Sight* SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 
 	SightConfig->SightRadius = 200.0f;
 	SightConfig->LoseSightRadius = 200.0f;
@@ -29,16 +29,14 @@ void ATroopController::OnPossess(APawn* InPawn) {
 
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(InPawn)) {
 		FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
-		auto Perception = this->GetAIPerceptionComponent();
-		auto Config = Perception->GetSenseConfig(Id);
-		auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
+		UAISenseConfig* Config = AIPerceptionComponent->GetSenseConfig(Id);
+		UAISenseConfig_Sight* ConfigSight = Cast<UAISenseConfig_Sight>(Config);
 
 		ConfigSight->SightRadius = Troop->TroopDataAsset->Range;
 		ConfigSight->LoseSightRadius = Troop->TroopDataAsset->Range;
 
-		Perception->RequestStimuliListenerUpdate();
+		AIPerceptionComponent->RequestStimuliListenerUpdate();
 	}
-	
 }
 
 void ATroopController::MoveTroopToLocation(FVector location) {
@@ -49,6 +47,8 @@ void ATroopController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stim
 	if (Stimulus.WasSuccessfullySensed() && Stimulus.Strength > 0.0f) {
 		if (Stimulus.StimulusLocation != FVector::ZeroVector) {
 			//float DistanceToActor = FVector::Distance(GetPawn()->GetActorLocation(), Stimulus.StimulusLocation);
+
+			Cast<ATroopCharacter>(GetPawn())->GetDamage(10);
 
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Actor!"));

@@ -18,6 +18,7 @@ void ULifeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 }
 
 void ULifeComponent::GetDamage(int damagePoints) {
-	Life -= damagePoints;
+	if(Life > 0)
+		Life -= damagePoints;
 }
 

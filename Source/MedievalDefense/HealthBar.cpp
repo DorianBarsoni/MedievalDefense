@@ -10,9 +10,9 @@ void UHealthBar::ChangeHealthPoints(int healthPoints, int maxHealth) {
 
         float healthPercentage = static_cast<float>(healthPoints) / static_cast<float>(maxHealth);
         if (HealthBar) {
-            if (healthPercentage <= 0.2) {
+            if (healthPercentage < 0.25) {
                 HealthBar->SetFillColorAndOpacity(FLinearColor::Red);
-            } else if (healthPercentage <= 0.4) {
+            } else if (healthPercentage < 0.5) {
                 HealthBar->SetFillColorAndOpacity(FLinearColor::Yellow);
             }
 

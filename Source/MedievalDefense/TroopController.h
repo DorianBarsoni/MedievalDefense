@@ -22,9 +22,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Component")
 	UAIPerceptionComponent* AIPerceptionComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
-	UAISenseConfig_Sight* SightConfig;
-
 	UFUNCTION(BlueprintCallable)
 	void MoveTroopToLocation(FVector location);
 

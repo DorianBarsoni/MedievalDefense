@@ -32,7 +32,7 @@ void ATroopCharacter::BeginPlay()
 		HealthComponentWidget->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		WidgetAsHealthBar = Cast<UHealthBar>(HealthComponentWidget->GetWidget());
 		WidgetAsHealthBar->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
-	}
+	} else UE_LOG(LogTemp, Error, TEXT("HealthComponentWidget error"));
 }
 
 void ATroopCharacter::Tick(float DeltaTime)
@@ -70,6 +70,5 @@ void ATroopCharacter::MakeTroopEnemy() {
 void ATroopCharacter::GetDamage(int damagePoints) {
 	LifeComponent->GetDamage(damagePoints);
 	WidgetAsHealthBar->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
-	//HealthBarWidgetComponent->HealthBarWidget->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
 }
 
