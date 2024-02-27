@@ -3,6 +3,7 @@
 #include "TroopController.h"
 #include "Engine/World.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "NavigationSystem.h"
 #include "Engine/EngineTypes.h"
 
 ACameraPlayerPawn::ACameraPlayerPawn()
@@ -66,7 +67,7 @@ void ACameraPlayerPawn::RightClickPressed() {
             for (auto Troop : SelectedTroops) {
                 ATroopController* TroopController = Cast<ATroopController>(Troop->GetController());
                 if (TroopController) {
-                    TroopController->MoveTroopToLocation(HitResult.ImpactPoint);
+                    TroopController->MoveTroopToLocation(getRandomPointAround(HitResult.ImpactPoint), CalculateAcceptanceRadius());
                 }
             }
         }
@@ -174,5 +175,37 @@ void ACameraPlayerPawn::UnselectTroops() {
 
 FVector ACameraPlayerPawn::getMiddlePoint() {
     return 0.5 * (HoldAndReleaseCoordinates.Get<1>() - HoldAndReleaseCoordinates.Get<0>()) + HoldAndReleaseCoordinates.Get<0>();
+}
+
+FVector ACameraPlayerPawn::getRandomPointAround(FVector Point) {
+    UNavigationSystemBase* NavigationSystem = GetWorld()->GetNavigationSystem();
+    if (NavigationSystem) {
+        UNavigationSystemV1* NavigationSystemV1 = Cast<UNavigationSystemV1>(NavigationSystem);
+        if (NavigationSystemV1) {
+            FNavLocation RandomLocation;
+            float radius = 600;
+            if (SelectedTroops.Num() < 10) {
+                radius = SelectedTroops.Num() * 60;
+            }
+            if (NavigationSystemV1->GetRandomReachablePointInRadius(Point, radius, RandomLocation)) {
+                return RandomLocation.Location;
+            }
+            else { UE_LOG(LogTemp, Error, TEXT("GetReachablePoint")); }
+        }
+        else { UE_LOG(LogTemp, Error, TEXT("NavSystemV1")); }
+    }
+    else {
+        UE_LOG(LogTemp, Error, TEXT("NavSystem"));
+    }
+
+    return Point;
+}
+
+float ACameraPlayerPawn::CalculateAcceptanceRadius() {
+    float AcceptanceRadius = 70;
+    if (SelectedTroops.Num() < 7) {
+        AcceptanceRadius = 10 * SelectedTroops.Num() - 10;
+    }
+    return AcceptanceRadius;
 }
 

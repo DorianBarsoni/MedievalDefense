@@ -23,7 +23,7 @@ public:
 	UAIPerceptionComponent* AIPerceptionComponent;
 
 	UFUNCTION(BlueprintCallable)
-	void MoveTroopToLocation(FVector location);
+	void MoveTroopToLocation(FVector location, float AcceptanceRadius=0);
 
 private:
 

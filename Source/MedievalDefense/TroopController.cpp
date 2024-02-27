@@ -1,5 +1,10 @@
 #include "TroopController.h"
 #include "TroopCharacter.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/Character.h"
+#include "AIController.h"
+#include "Navigation/PathFollowingComponent.h"
+
 
 
 ATroopController::ATroopController() {
@@ -39,8 +44,21 @@ void ATroopController::OnPossess(APawn* InPawn) {
 	}
 }
 
-void ATroopController::MoveTroopToLocation(FVector location) {
-	this->MoveToLocation(location);
+void ATroopController::MoveTroopToLocation(FVector location, float AcceptanceRadius) {
+
+	this->MoveToLocation(location, AcceptanceRadius);
+	/*FAIMoveRequest MoveRequest;
+	MoveRequest.SetGoalLocation(location);
+
+	FPathFollowingRequestResult MoveResult;
+	MoveResult = MoveTo(MoveRequest, nullptr);
+
+	if (MoveResult.Code == EPathFollowingRequestResult::RequestSuccessful) {
+		UE_LOG(LogTemp, Warning, TEXT("Déplacement initié avec succès."));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Échec du déplacement."));
+	}*/
 }
 
 void ATroopController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus) {

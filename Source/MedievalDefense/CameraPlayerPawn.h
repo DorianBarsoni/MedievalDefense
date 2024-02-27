@@ -59,4 +59,8 @@ private:
 
 	FVector getMiddlePoint();
 
+	FVector getRandomPointAround(FVector Point);
+
+	float CalculateAcceptanceRadius();
+
 };
