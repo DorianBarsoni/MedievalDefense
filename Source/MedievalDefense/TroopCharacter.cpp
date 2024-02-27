@@ -28,17 +28,11 @@ void ATroopCharacter::BeginPlay()
 		MyCharacterMovement->MaxWalkSpeed = TroopDataAsset->SpeedMovement;
 	} else UE_LOG(LogTemp, Error, TEXT("CharacterMovement is not valid in ATroopCharacter::BeginPlay"));
 
-	/*
-	HealthBarWidgetComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	HealthBarWidgetComponent->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
-	*/
-
-	HealthComponentWidget->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	WidgetAsHealthBar = Cast<UHealthBar>(HealthComponentWidget->GetWidget());
-	WidgetAsHealthBar->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
-
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Troop : %d %d"), TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint));
+	if (HealthComponentWidget) {
+		HealthComponentWidget->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		WidgetAsHealthBar = Cast<UHealthBar>(HealthComponentWidget->GetWidget());
+		WidgetAsHealthBar->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
+	}
 }
 
 void ATroopCharacter::Tick(float DeltaTime)

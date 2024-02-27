@@ -28,10 +28,15 @@ void ATroopController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(InPawn)) {
-		SightConfig->SightRadius = Troop->TroopDataAsset->Range;
-		SightConfig->LoseSightRadius = Troop->TroopDataAsset->Range;
+		FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
+		auto Perception = this->GetAIPerceptionComponent();
+		auto Config = Perception->GetSenseConfig(Id);
+		auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
 
-		AIPerceptionComponent->ConfigureSense(*SightConfig);
+		ConfigSight->SightRadius = Troop->TroopDataAsset->Range;
+		ConfigSight->LoseSightRadius = Troop->TroopDataAsset->Range;
+
+		Perception->RequestStimuliListenerUpdate();
 	}
 	
 }
