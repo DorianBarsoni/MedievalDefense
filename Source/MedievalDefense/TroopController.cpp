@@ -64,10 +64,6 @@ void ATroopController::MoveTroopToLocation(FVector location, float AcceptanceRad
 void ATroopController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus) {
 	if (Stimulus.WasSuccessfullySensed() && Stimulus.Strength > 0.0f) {
 		if (Stimulus.StimulusLocation != FVector::ZeroVector) {
-			//float DistanceToActor = FVector::Distance(GetPawn()->GetActorLocation(), Stimulus.StimulusLocation);
-
-			Cast<ATroopCharacter>(GetPawn())->GetDamage(10);
-
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Actor!"));
 		}

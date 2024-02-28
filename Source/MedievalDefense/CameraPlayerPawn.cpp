@@ -46,9 +46,6 @@ void ACameraPlayerPawn::LeftMousePressed() {
             FVector HitLocation = HitResult.ImpactPoint;
             ATroopCharacter *Troop = Cast<ATroopCharacter>(HitActor);
 
-            FString name = HitActor->GetActorNameOrLabel();
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, name);
-
             UnselectTroops();
             if (Troop && Troop->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
                 Troop->GetMesh()->SetRenderCustomDepth(true);
