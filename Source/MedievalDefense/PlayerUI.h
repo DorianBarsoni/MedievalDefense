@@ -12,12 +12,18 @@ class MEDIEVALDEFENSE_API UPlayerUI : public UUserWidget
 {
 	GENERATED_BODY()
 
+	virtual void NativeConstruct() override;
+
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* KnightButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* KnightText;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* KnightNumberText;
+
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* ArcherButton;
@@ -31,15 +37,21 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TroopCharacter")
 	TSubclassOf<AActor> ArcherActor;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ArcherNumberText;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnRadius;
 
 private:
 	UFUNCTION(BlueprintCallable)
-	void onKnightButtonClicked(FVector SpawnPoint);
+	bool onKnightButtonClicked(FVector SpawnPoint);
 
 	UFUNCTION(BlueprintCallable)
-	void onArcherButtonClicked(FVector SpawnPoint);
+	bool onArcherButtonClicked(FVector SpawnPoint);
+
+	bool SpawnSpecificActor(FVector SpawnPoint, UClass* ActorClassToSpawn);
 
 	FVector getSpawnPoint(FVector SpawnPoint);
 	

@@ -4,27 +4,27 @@
 #include "PlayerUI.h"
 #include "NavigationSystem.h"
 
-void UPlayerUI::onKnightButtonClicked(FVector SpawnPoint) {
-    if (KnightActor) {         
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+FActorSpawnParameters SpawnParams;
 
-        AActor* NewTroopCharacter = GetWorld()->SpawnActor<AActor>(KnightActor, getSpawnPoint(SpawnPoint), FRotator::ZeroRotator, SpawnParams);
-    } else {
-        UE_LOG(LogTemp, Error, TEXT("TroopCharacterBlueprint not set in UPlayerUI"));
-    }
+void UPlayerUI::NativeConstruct() {
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 }
 
-void UPlayerUI::onArcherButtonClicked(FVector SpawnPoint) {
-    if (ArcherActor) {
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+bool UPlayerUI::onKnightButtonClicked(FVector SpawnPoint) {
+    return SpawnSpecificActor(SpawnPoint, KnightActor);
+}
 
-        AActor* NewTroopCharacter = GetWorld()->SpawnActor<AActor>(ArcherActor, getSpawnPoint(SpawnPoint), FRotator::ZeroRotator, SpawnParams);
+bool UPlayerUI::onArcherButtonClicked(FVector SpawnPoint) {
+    return SpawnSpecificActor(SpawnPoint, ArcherActor);
+}
+
+bool UPlayerUI::SpawnSpecificActor(FVector SpawnPoint, UClass *ActorClassToSpawn) {
+    if (ActorClassToSpawn) {
+        GetWorld()->SpawnActor<AActor>(ActorClassToSpawn, getSpawnPoint(SpawnPoint), FRotator::ZeroRotator, SpawnParams);
+        return true;
     }
-    else {
-        UE_LOG(LogTemp, Error, TEXT("TroopCharacterBlueprint not set in UPlayerUI"));
-    }
+    UE_LOG(LogTemp, Error, TEXT("TroopCharacterBlueprint not set in UPlayerUI"));
+    return false;
 }
 
 FVector UPlayerUI::getSpawnPoint(FVector SpawnPoint) {
