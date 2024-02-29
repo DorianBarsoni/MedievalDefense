@@ -20,13 +20,18 @@ public:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Component")
-	UAIPerceptionComponent* AIPerceptionComponent;
+	UAIPerceptionComponent* AIPerceptionComponentForAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	UAIPerceptionComponent* AIPerceptionComponentForSight;
 
 	UFUNCTION(BlueprintCallable)
 	void MoveTroopToLocation(FVector location, float AcceptanceRadius=0);
 
 private:
+	UFUNCTION()
+	void OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulus Stimulus);
 
 	UFUNCTION()
-	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	void OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus Stimulus);
 };

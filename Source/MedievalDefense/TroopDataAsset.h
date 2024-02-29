@@ -27,7 +27,10 @@ public:
 	int AttackDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Range;
+	float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SightRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Cooldown;
