@@ -74,24 +74,27 @@ void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulu
 }
 
 void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus Stimulus) {
-			if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
-				FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
-				FName OwnTag = Cast<ATroopCharacter>(GetPawn())->TroopDataAsset->TeamTag.GetTagName();
-				if (OwnTag != ActorTag) {
-					UBlackboardComponent* OwnBlackboard = GetBlackboardComponent();
-					if (OwnBlackboard) {
-						const FName BlackboardKey("IsEnemyOnSight");
+	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
+		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
+		ATroopCharacter* OwnTroop = Cast<ATroopCharacter>(GetPawn());
+		FName OwnTag = OwnTroop->TroopDataAsset->TeamTag.GetTagName();
+		if (OwnTag != ActorTag) {
+			UBlackboardComponent* OwnBlackboard = GetBlackboardComponent();
+			if (OwnBlackboard) {
+				const FName BlackboardKey("IsEnemyOnSight");
 
-						if (Stimulus.WasSuccessfullySensed()) {
-							OwnBlackboard->SetValueAsBool(BlackboardKey, true);
-							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Entrée SightRange"));
-						}
-						else {
-							OwnBlackboard->SetValueAsBool(BlackboardKey, false);
-							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Sortie SightRange"));
-						}
-					}
+				bool bIsCurrentlyInsideRadius = FVector::DistSquared(Troop->GetActorLocation(), GetPawn()->GetActorLocation())
+					<= OwnTroop->TroopDataAsset->SightRange * OwnTroop->TroopDataAsset->SightRange;
+
+				if (bIsCurrentlyInsideRadius) {
+					OwnBlackboard->SetValueAsBool(BlackboardKey, true);
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Entrée SightRange"));
+				} else {
+					OwnBlackboard->SetValueAsBool(BlackboardKey, false);
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Sortie SightRange"));
 				}
 			}
+		}
+	}
 }
 
