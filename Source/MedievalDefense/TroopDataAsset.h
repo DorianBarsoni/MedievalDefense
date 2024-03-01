@@ -33,6 +33,12 @@ public:
 	float SightRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float LoseSightRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Cooldown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* AttackAnim;
 	
 };

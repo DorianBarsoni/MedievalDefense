@@ -28,6 +28,9 @@ void ATroopCharacter::BeginPlay()
 		HealthComponentWidget->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		WidgetAsHealthBar = Cast<UHealthBar>(HealthComponentWidget->GetWidget());
 		WidgetAsHealthBar->ChangeHealthPoints(TroopDataAsset->LifePoint, TroopDataAsset->MaxLifePoint);
+		if (TroopDataAsset->TeamTag.GetTagName() == "Enemy") {
+			WidgetAsHealthBar->HealthBar->SetVisibility(ESlateVisibility::Visible);
+		} else WidgetAsHealthBar->HealthBar->SetVisibility(ESlateVisibility::Hidden);
 	} else UE_LOG(LogTemp, Error, TEXT("HealthComponentWidget error"));
 }
 
