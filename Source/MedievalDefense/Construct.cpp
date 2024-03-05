@@ -25,3 +25,8 @@ void AConstruct::Tick(float DeltaTime) {
 
 }
 
+void AConstruct::GetDamage(int damagePoints) {
+	LifeComponent->GetDamage(damagePoints);
+	WidgetAsHealthBar->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
+}
+
