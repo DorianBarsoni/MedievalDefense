@@ -40,5 +40,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAnimMontage* AttackAnim;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage* DeathAnim;
 };

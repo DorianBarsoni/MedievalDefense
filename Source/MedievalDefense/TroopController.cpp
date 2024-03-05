@@ -49,6 +49,7 @@ void ATroopController::OnPossess(APawn* InPawn) {
 
 		ConfigSight->SightRadius = Troop->TroopDataAsset->AttackRange;
 		ConfigSight->LoseSightRadius = Troop->TroopDataAsset->AttackRange+20;
+		ConfigSight->SetMaxAge(1.0f);
 		AIPerceptionComponentForAttack->RequestStimuliListenerUpdate();
 
 
@@ -56,6 +57,7 @@ void ATroopController::OnPossess(APawn* InPawn) {
 		ConfigSight = Cast<UAISenseConfig_Sight>(Config);
 		ConfigSight->SightRadius = Troop->TroopDataAsset->SightRange;
 		ConfigSight->LoseSightRadius = Troop->TroopDataAsset->LoseSightRange;
+		ConfigSight->SetMaxAge(1.0f);
 		AIPerceptionComponentForSight->RequestStimuliListenerUpdate();
 	}
 }
@@ -106,7 +108,11 @@ void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus
 
 				if (bIsCurrentlyInsideRadius) {
 					OwnBlackboard->SetValueAsBool(BlackboardKeySight, true);
-					OwnBlackboard->SetValueAsObject(BlackboardKeyChased, Troop);
+					UObject* CurrentChasedObject = OwnBlackboard->GetValueAsObject(BlackboardKeyChased);
+					if (!CurrentChasedObject) {
+						OwnBlackboard->SetValueAsObject(BlackboardKeyChased, Troop);
+					}
+					
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Entrée SightRange"));
 				} else {
 					OwnBlackboard->SetValueAsBool(BlackboardKeySight, false);
