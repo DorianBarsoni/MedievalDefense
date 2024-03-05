@@ -17,6 +17,7 @@ ATroopController::ATroopController() {
 	SightConfig->SightRadius = 200.0f;
 	SightConfig->LoseSightRadius = 200.0f;
 	SightConfig->PeripheralVisionAngleDegrees = 360.0f;
+	SightConfig->SetMaxAge(0.2f);
 
 	FAISenseAffiliationFilter SenseAffiliationFilter;
 	SenseAffiliationFilter.bDetectEnemies = true;
@@ -29,6 +30,7 @@ ATroopController::ATroopController() {
 	SightConfig2->SightRadius = 1000.0f;
 	SightConfig2->LoseSightRadius = 1000.0f;
 	SightConfig2->PeripheralVisionAngleDegrees = 360.0f;
+	SightConfig2->SetMaxAge(0.2f);
 	SightConfig2->DetectionByAffiliation = SenseAffiliationFilter;
 	AIPerceptionComponentForSight->OnTargetPerceptionUpdated.AddDynamic(this, &ATroopController::OnTargetPerceptionUpdatedSight);
 	AIPerceptionComponentForSight->ConfigureSense(*SightConfig2);
@@ -49,7 +51,6 @@ void ATroopController::OnPossess(APawn* InPawn) {
 
 		ConfigSight->SightRadius = Troop->TroopDataAsset->AttackRange;
 		ConfigSight->LoseSightRadius = Troop->TroopDataAsset->AttackRange+20;
-		ConfigSight->SetMaxAge(1.0f);
 		AIPerceptionComponentForAttack->RequestStimuliListenerUpdate();
 
 
@@ -57,7 +58,6 @@ void ATroopController::OnPossess(APawn* InPawn) {
 		ConfigSight = Cast<UAISenseConfig_Sight>(Config);
 		ConfigSight->SightRadius = Troop->TroopDataAsset->SightRange;
 		ConfigSight->LoseSightRadius = Troop->TroopDataAsset->LoseSightRange;
-		ConfigSight->SetMaxAge(1.0f);
 		AIPerceptionComponentForSight->RequestStimuliListenerUpdate();
 	}
 }
@@ -67,6 +67,7 @@ void ATroopController::MoveTroopToLocation(FVector location, float AcceptanceRad
 }
 
 void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulus Stimulus) {
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Attack Stimulus"));
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
 		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
 		ATroopCharacter* OwnTroop = Cast<ATroopCharacter>(GetPawn());
@@ -93,6 +94,7 @@ void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulu
 }
 
 void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus Stimulus) {
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Sight Stimulus"));
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
 		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
 		ATroopCharacter* OwnTroop = Cast<ATroopCharacter>(GetPawn());
@@ -110,7 +112,9 @@ void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus
 					OwnBlackboard->SetValueAsBool(BlackboardKeySight, true);
 					UObject* CurrentChasedObject = OwnBlackboard->GetValueAsObject(BlackboardKeyChased);
 					if (!CurrentChasedObject) {
-						OwnBlackboard->SetValueAsObject(BlackboardKeyChased, Troop);
+						if (Troop->LifeComponent->Life > 0) {
+							OwnBlackboard->SetValueAsObject(BlackboardKeyChased, Troop);
+						}
 					}
 					
 					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Entrée SightRange"));
