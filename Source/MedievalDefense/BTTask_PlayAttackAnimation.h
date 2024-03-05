@@ -16,5 +16,5 @@ class MEDIEVALDEFENSE_API UBTTask_PlayAttackAnimation : public UBTTask_PlayAnima
 
 public:
 	explicit UBTTask_PlayAttackAnimation(FObjectInitializer const& ObjectInitializer);
-	void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult);
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

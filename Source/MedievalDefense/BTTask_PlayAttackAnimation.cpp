@@ -14,24 +14,13 @@ UBTTask_PlayAttackAnimation::UBTTask_PlayAttackAnimation(FObjectInitializer cons
 	NodeName = "Attack Enemy";
 }
 
-void UBTTask_PlayAttackAnimation::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
-{
-    Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
-
+EBTNodeResult::Type UBTTask_PlayAttackAnimation:: ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
     if (ATroopController* const Controller = Cast<ATroopController>(OwnerComp.GetAIOwner())) {
         if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Controller->GetPawn())) {
             UAnimMontage* CustomAnimation = Cast<ATroopCharacter>(Controller->GetPawn())->TroopDataAsset->AttackAnim;
-
-            if (TaskResult == EBTNodeResult::Succeeded && CustomAnimation)
-            {
-                // Obtient le pawn du contrôleur AI
-                UAnimInstance* AnimInstance = Troop->GetMesh()->GetAnimInstance();
-                if (AnimInstance)
-                {
-                    // Joue l'animation personnalisée
-                    AnimInstance->Montage_Play(CustomAnimation, 1.f);
-                }
-            }
+            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, TEXT("Play animation !"));
         }
     }
+
+    return Super::ExecuteTask(OwnerComp, NodeMemory);
 }
