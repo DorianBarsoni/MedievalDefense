@@ -93,13 +93,17 @@ void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulu
 }
 
 void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus Stimulus) {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Stimulus"));
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Actor is TroopCharacter"));
 		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
 		ATroopCharacter* OwnTroop = Cast<ATroopCharacter>(GetPawn());
 		FName OwnTag = OwnTroop->TroopDataAsset->TeamTag.GetTagName();
 		if (OwnTag != ActorTag) {
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Troop is Enemy !"));
 			UBlackboardComponent* OwnBlackboard = GetBlackboardComponent();
 			if (OwnBlackboard) {
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Getting blackboard"));
 				const FName BlackboardKeySight("IsEnemyOnSight");
 				const FName BlackboardKeyChased("EnemyChased");
 
@@ -107,10 +111,13 @@ void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus
 					<= OwnTroop->TroopDataAsset->SightRange * OwnTroop->TroopDataAsset->SightRange;
 
 				if (bIsCurrentlyInsideRadius) {
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Dist under radius"));
 					OwnBlackboard->SetValueAsBool(BlackboardKeySight, true);
 					UObject* CurrentChasedObject = OwnBlackboard->GetValueAsObject(BlackboardKeyChased);
 					if (!CurrentChasedObject) {
+						GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("EnemyChased not set"));
 						if (Troop->LifeComponent->Life > 0) {
+							GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Setting EnemyChased"));
 							OwnBlackboard->SetValueAsObject(BlackboardKeyChased, Troop);
 						}
 					}
