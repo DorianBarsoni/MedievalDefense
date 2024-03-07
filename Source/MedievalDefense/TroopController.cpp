@@ -67,7 +67,6 @@ void ATroopController::MoveTroopToLocation(FVector location, float AcceptanceRad
 }
 
 void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulus Stimulus) {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Attack Stimulus"));
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
 		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
 		ATroopCharacter* OwnTroop = Cast<ATroopCharacter>(GetPawn());
@@ -94,7 +93,6 @@ void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulu
 }
 
 void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus Stimulus) {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Sight Stimulus"));
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
 		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();
 		ATroopCharacter* OwnTroop = Cast<ATroopCharacter>(GetPawn());
