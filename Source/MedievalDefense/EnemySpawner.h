@@ -29,5 +29,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnEnemy();
+	void SpawnEnemies(int NumberOfEnemiesToSpawn);
 };

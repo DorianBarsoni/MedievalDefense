@@ -17,10 +17,7 @@ void AEnemySpawner::BeginPlay()
 
 	for (AActor* FoundActor : FoundActors) {
 		AreasToAttack.Add(Cast<ACastleAttackableArea>(FoundActor));
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, FString::Printf(TEXT("%d spawners"), AreasToAttack.Num()));
-	
+	}	
 }
 
 void AEnemySpawner::Tick(float DeltaTime)
@@ -29,19 +26,21 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 }
 
-void AEnemySpawner::SpawnEnemy() {
+void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
     UNavigationSystemBase* NavigationSystem = GetWorld()->GetNavigationSystem();
     if (NavigationSystem) {
         UNavigationSystemV1* NavigationSystemV1 = Cast<UNavigationSystemV1>(NavigationSystem);
         if (NavigationSystemV1) {
             FNavLocation RandomLocation;
-            if (NavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
-                RandomLocation.Location += FVector(0, 0, 100);
-                FActorSpawnParameters SpawnParams;
-                SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-                GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
-            }
-            else { UE_LOG(LogTemp, Error, TEXT("GetReachablePoint")); }
+            FActorSpawnParameters SpawnParams;
+            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+            for (int i = 0; i < NumberOfEnemiesToSpawn; i++) {
+                if (NavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
+                    RandomLocation.Location += FVector(0, 0, 100);
+                    GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
+                }
+                else { UE_LOG(LogTemp, Error, TEXT("GetReachablePoint")); }
+            }   
         }
         else { UE_LOG(LogTemp, Error, TEXT("NavSystemV1")); }
     }

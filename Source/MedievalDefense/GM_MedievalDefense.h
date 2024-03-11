@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "EnemySpawner.h"
 #include "GM_MedievalDefense.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateTimerDelegate, int32, Seconds);
@@ -22,6 +23,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PreparationTime = 60;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfEnemiesToAdd = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CurrentAmoutOfEnemies = 0;
+
 	UPROPERTY(BlueprintAssignable, Category = "Timer")
 	FUpdateTimerDelegate UpdateTimer;
 
@@ -31,7 +38,11 @@ public:
 	virtual void BeginPlay() override;
 
 private:
+	TArray<AEnemySpawner*> EnemySpawners;
+
 	void TimerFunction();
+
+	void SpawnEnemies();
 
 	void EndPlay(const EEndPlayReason::Type EndPlayReason);
 };
