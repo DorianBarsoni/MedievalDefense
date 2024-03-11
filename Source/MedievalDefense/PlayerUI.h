@@ -40,9 +40,20 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ArcherNumberText;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* TimeBeforeNextRound;
+
+	UPROPERTY(BlueprintReadWrite, meta= (BindWidget))
+	UTextBlock* CurrentRound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnRadius;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateTimeBeforeNextRound(int32 Seconds);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateRound(int32 RoundNumber);
 
 private:
 	UFUNCTION(BlueprintCallable)

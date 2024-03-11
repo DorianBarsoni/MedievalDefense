@@ -3,11 +3,23 @@
 
 #include "PlayerUI.h"
 #include "NavigationSystem.h"
+#include "GM_MedievalDefense.h"
 
 FActorSpawnParameters SpawnParams;
 
 void UPlayerUI::NativeConstruct() {
     SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+    Super::NativeConstruct();
+
+    AGM_MedievalDefense* GameMode = GetWorld()->GetAuthGameMode<AGM_MedievalDefense>();
+    if (GameMode) {
+        TimeBeforeNextRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), GameMode->PreparationTime)));
+        CurrentRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), GameMode->RoundNumber)));
+
+        GameMode->UpdateTimer.AddDynamic(this, &UPlayerUI::UpdateTimeBeforeNextRound);
+        GameMode->UpdateRound.AddDynamic(this, &UPlayerUI::UpdateRound);
+    }
 }
 
 bool UPlayerUI::onKnightButtonClicked(FVector SpawnPoint) {
@@ -25,6 +37,19 @@ bool UPlayerUI::SpawnSpecificActor(FVector SpawnPoint, UClass *ActorClassToSpawn
     }
     UE_LOG(LogTemp, Error, TEXT("TroopCharacterBlueprint not set in UPlayerUI"));
     return false;
+}
+
+void UPlayerUI::UpdateTimeBeforeNextRound(int32 Seconds)
+{
+    if (TimeBeforeNextRound) {
+        TimeBeforeNextRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), Seconds)));
+    }
+}
+
+void UPlayerUI::UpdateRound(int32 RoundNumber) {
+    if (CurrentRound) {
+        CurrentRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), RoundNumber)));
+    }
 }
 
 FVector UPlayerUI::getSpawnPoint(FVector SpawnPoint) {
