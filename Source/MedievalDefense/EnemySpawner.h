@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "CastleAttackableArea.h"
 #include "TroopCharacter.h"
+#include "Construct.h"
 #include "EnemySpawner.generated.h"
 
 UCLASS()
@@ -20,6 +21,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ATroopCharacter> EnemyToSpawn;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AConstruct> CastleClass;
+
 	TArray<ACastleAttackableArea*> AreasToAttack;
 
 protected:
@@ -30,4 +34,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnEnemies(int NumberOfEnemiesToSpawn);
+
+private:
+	AConstruct* Castle;
 };
