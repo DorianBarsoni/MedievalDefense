@@ -51,3 +51,7 @@ void ATroopCharacter::GetDamage(int damagePoints) {
 	WidgetAsHealthBar->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
 }
 
+bool ATroopCharacter::IsDead() {
+	return LifeComponent->Life <= 0;
+}
+

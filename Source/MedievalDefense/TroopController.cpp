@@ -64,6 +64,29 @@ void ATroopController::MoveTroopToLocation(FVector location, float AcceptanceRad
 	this->MoveToLocation(location, AcceptanceRadius);
 }
 
+void ATroopController::SwitchToNextEnemy() {
+	if (!EnemiesToAttack.IsEmpty()) {
+		if (EnemiesToAttack[0]->IsDead()) {
+			EnemiesToAttack.RemoveAt(0);
+		}
+	}
+
+	UBlackboardComponent* OwnBlackboard = GetBlackboardComponent();
+	const FName BlackboardKeyChased("EnemyChased");
+	const FName BlackboardKeyEnemyRange("IsEnemyInRange");
+	const FName BlackboardKeyEnemySight("IsEnemyOnSight");
+
+	if (!EnemiesToAttack.IsEmpty()) {
+		ATroopCharacter* EnemyToAttack = EnemiesToAttack[0];
+		OwnBlackboard->SetValueAsObject(BlackboardKeyChased, EnemyToAttack);
+	}
+	else {
+		OwnBlackboard->SetValueAsObject(BlackboardKeyChased, nullptr);
+		OwnBlackboard->SetValueAsBool(BlackboardKeyEnemySight, false);
+		OwnBlackboard->SetValueAsBool(BlackboardKeyEnemyRange, false);
+	}
+}
+
 void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulus Stimulus) {
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Actor)) {
 		FName ActorTag = Troop->TroopDataAsset->TeamTag.GetTagName();

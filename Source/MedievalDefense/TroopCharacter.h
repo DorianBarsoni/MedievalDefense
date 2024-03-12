@@ -34,6 +34,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	bool IsDead();
+
 	UFUNCTION(BlueprintCallable)
 	void GetDamage(int damagePoints);
 

@@ -13,5 +13,7 @@ UCLASS()
 class MEDIEVALDEFENSE_API UAttackNotify : public UAnimNotify
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

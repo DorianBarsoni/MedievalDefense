@@ -32,6 +32,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void MoveTroopToLocation(FVector location, float AcceptanceRadius=0);
 
+	void SwitchToNextEnemy();
+
 private:
 	UFUNCTION()
 	void OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulus Stimulus);
