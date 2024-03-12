@@ -55,19 +55,16 @@ void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
                                 const FName BlackboardKeyAttackablePoint("CastleAttackPoint");
                                 int32 RandomAreaIndex = FMath::RandRange(0, AreasToAttack.Num() - 1);
                                 ACastleAttackableArea* RandomArea = AreasToAttack[RandomAreaIndex];
-                                FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetComponentScale());
+                                FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent());
                                 OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
+                                GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("%f %f %f"), RandomAttackPoint.X, RandomAttackPoint.Y, RandomAttackPoint.Z));
                             }
                         }
                     }
-                }
-                else { UE_LOG(LogTemp, Error, TEXT("GetReachablePoint")); }
-            }   
-        }
-        else { UE_LOG(LogTemp, Error, TEXT("NavSystemV1")); }
-    }
-    else {
-        UE_LOG(LogTemp, Error, TEXT("NavSystem"));
-    }
+                } else UE_LOG(LogTemp, Error, TEXT("GetReachablePoint"));
+            }  
+        } else UE_LOG(LogTemp, Error, TEXT("NavSystemV1"));
+    } else UE_LOG(LogTemp, Error, TEXT("NavSystem"));
+    
 }
 
