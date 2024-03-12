@@ -55,9 +55,15 @@ void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
                                 const FName BlackboardKeyAttackablePoint("CastleAttackPoint");
                                 int32 RandomAreaIndex = FMath::RandRange(0, AreasToAttack.Num() - 1);
                                 ACastleAttackableArea* RandomArea = AreasToAttack[RandomAreaIndex];
-                                FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent());
+                                FRotator Rotation = RandomArea->LocationVolume->GetComponentRotation();
+                                FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(
+                                    RandomArea->GetActorLocation(),
+                                    RandomArea->LocationVolume->GetScaledBoxExtent().RotateAngleAxis(Rotation.Yaw, FVector::UpVector)
+                                );
+
                                 OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
-                                GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("%f %f %f"), RandomAttackPoint.X, RandomAttackPoint.Y, RandomAttackPoint.Z));
+                                DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
+                                DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
                             }
                         }
                     }
