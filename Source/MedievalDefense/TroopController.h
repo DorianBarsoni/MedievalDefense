@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "TroopCharacter.h"
 #include "TroopController.generated.h"
 
 UCLASS(Blueprintable)
@@ -24,6 +25,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
 	UAIPerceptionComponent* AIPerceptionComponentForSight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<ATroopCharacter*> EnemiesToAttack;
 
 	UFUNCTION(BlueprintCallable)
 	void MoveTroopToLocation(FVector location, float AcceptanceRadius=0);
