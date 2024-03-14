@@ -5,6 +5,7 @@
 #include "TroopCharacter.h"
 #include "TroopController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Construct.h"
 
 void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) {
 	if (ATroopCharacter* Troop = Cast<ATroopCharacter>(MeshComp->GetOwner())) {
@@ -17,8 +18,7 @@ void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 				const FName BlackboardKeyCastle("Castle");
 
 				ATroopCharacter* EnemyChased = Cast<ATroopCharacter>(OwnBlackboard->GetValueAsObject(BlackboardKeyChased));
-
-				if (EnemyChased) {
+				if (EnemyChased && OwnBlackboard->GetValueAsBool(BlackboardKeyEnemyRange)) {
 					EnemyChased->GetDamage(Troop->TroopDataAsset->AttackDamage);
 
 					if (EnemyChased->IsDead()) {
@@ -28,12 +28,13 @@ void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 								EnemyBlackboard->SetValueAsBool(BlackboardKeyEnemyIsDead, true);
 							}
 						}
-
 						TroopController->SwitchToNextEnemy();
 					}
 				}
-				else if (false) {
-					//Si il y a chateau et qu'on est dans la range attaquer le chateau
+				else if (AConstruct* Castle = Cast<AConstruct>(OwnBlackboard->GetValueAsObject(BlackboardKeyCastle))) {
+					if (OwnBlackboard->GetValueAsBool(BlackboardKeyCastleRange)) {
+						Castle->GetDamage(Troop->TroopDataAsset->AttackDamage);
+					}
 				}
 
 			}

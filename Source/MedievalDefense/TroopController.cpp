@@ -65,25 +65,45 @@ void ATroopController::MoveTroopToLocation(FVector location, float AcceptanceRad
 }
 
 void ATroopController::SwitchToNextEnemy() {
-	if (!EnemiesToAttack.IsEmpty()) {
-		if (EnemiesToAttack[0]->IsDead()) {
-			EnemiesToAttack.RemoveAt(0);
-		}
-	}
+	//Si attack pas vide on cherche le prochain dans attack
+	//sinon si move pas vide chercher le prochain dans move
+	//sinon on passe les bool à false et enemy to attack à nullptr
 
 	UBlackboardComponent* OwnBlackboard = GetBlackboardComponent();
 	const FName BlackboardKeyChased("EnemyChased");
 	const FName BlackboardKeyEnemyRange("IsEnemyInRange");
 	const FName BlackboardKeyEnemySight("IsEnemyOnSight");
 
-	if (!EnemiesToAttack.IsEmpty()) {
-		ATroopCharacter* EnemyToAttack = EnemiesToAttack[0];
-		OwnBlackboard->SetValueAsObject(BlackboardKeyChased, EnemyToAttack);
+	for (int32 Index = 0; Index < EnemiesToAttack.Num(); ++Index) {
+		auto EnemyToAttack = EnemiesToAttack[Index];
+		if (EnemyToAttack->IsDead()) {
+			EnemiesToAttack.RemoveAt(Index);
+			Index--;
+		}
 	}
-	else {
-		OwnBlackboard->SetValueAsObject(BlackboardKeyChased, nullptr);
-		OwnBlackboard->SetValueAsBool(BlackboardKeyEnemySight, false);
+
+	if (!EnemiesToAttack.IsEmpty()) {
+		OwnBlackboard->SetValueAsObject(BlackboardKeyChased, EnemiesToAttack[0]);
+		OwnBlackboard->SetValueAsBool(BlackboardKeyEnemyRange, true);
+		OwnBlackboard->SetValueAsBool(BlackboardKeyEnemySight, true);
+	} else {
 		OwnBlackboard->SetValueAsBool(BlackboardKeyEnemyRange, false);
+
+		for (int32 Index = 0; Index < EnemiesInRange.Num(); ++Index) {
+			auto EnemyInRange = EnemiesInRange[Index];
+			if (EnemyInRange->IsDead()) {
+				EnemiesInRange.RemoveAt(Index);
+				Index--;
+			}
+		}
+
+		if (!EnemiesInRange.IsEmpty()) {
+			OwnBlackboard->SetValueAsObject(BlackboardKeyChased, EnemiesInRange[0]);
+			OwnBlackboard->SetValueAsBool(BlackboardKeyEnemySight, true);
+		} else {
+			OwnBlackboard->SetValueAsObject(BlackboardKeyChased, nullptr);
+			OwnBlackboard->SetValueAsBool(BlackboardKeyEnemySight, false);
+		}
 	}
 }
 
@@ -101,12 +121,12 @@ void ATroopController::OnTargetPerceptionUpdatedAttack(AActor* Actor, FAIStimulu
 					<= OwnTroop->TroopDataAsset->AttackRange * OwnTroop->TroopDataAsset->AttackRange;
 
 				if (bIsCurrentlyInsideRadius) {
+					EnemiesToAttack.Add(Troop);
 					OwnBlackboard->SetValueAsBool(BlackboardKeyRange, true);
-					//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT("Entrée AttackRange"));
 				}
 				else {
+					EnemiesToAttack.Remove(Troop);
 					OwnBlackboard->SetValueAsBool(BlackboardKeyRange, false);
-					//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Sortie AttackRange"));
 				}
 			}
 		}
@@ -128,13 +148,13 @@ void ATroopController::OnTargetPerceptionUpdatedSight(AActor* Actor, FAIStimulus
 					<= OwnTroop->TroopDataAsset->SightRange * OwnTroop->TroopDataAsset->SightRange;
 
 				if (bIsCurrentlyInsideRadius) {
-					EnemiesToAttack.Add(Troop);
+					EnemiesInRange.Add(Troop);
 					OwnBlackboard->SetValueAsBool(BlackboardKeySight, true);
-					if (EnemiesToAttack.Num() == 1) {
-						OwnBlackboard->SetValueAsObject(BlackboardKeyChased, EnemiesToAttack[0]);
+					if (EnemiesInRange.Num() == 1) {
+						OwnBlackboard->SetValueAsObject(BlackboardKeyChased, EnemiesInRange[0]);
 					}
 				} else {
-					EnemiesToAttack.Remove(Troop);
+					EnemiesInRange.Remove(Troop);
 					OwnBlackboard->SetValueAsBool(BlackboardKeySight, false);
 					OwnBlackboard->SetValueAsObject(BlackboardKeyChased, nullptr);
 				}

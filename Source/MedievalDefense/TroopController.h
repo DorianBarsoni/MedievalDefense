@@ -27,6 +27,9 @@ public:
 	UAIPerceptionComponent* AIPerceptionComponentForSight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<ATroopCharacter*> EnemiesInRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ATroopCharacter*> EnemiesToAttack;
 
 	UFUNCTION(BlueprintCallable)
