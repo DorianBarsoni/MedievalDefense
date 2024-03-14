@@ -4,6 +4,7 @@
 #include "PlayerUI.h"
 #include "NavigationSystem.h"
 #include "GM_MedievalDefense.h"
+#include "PlayerInventorySubsystem.h"
 
 FActorSpawnParameters SpawnParams;
 
@@ -23,11 +24,37 @@ void UPlayerUI::NativeConstruct() {
 }
 
 bool UPlayerUI::onKnightButtonClicked(FVector SpawnPoint) {
-    return SpawnSpecificActor(SpawnPoint, KnightActor);
+    if (APlayerController* OwningPlayerController = GetOwningPlayer()) {
+        if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(OwningPlayerController->Player)) {
+            if (UPlayerInventorySubsystem* InventorySubsystem = LocalPlayer->GetSubsystem<UPlayerInventorySubsystem>()) {
+                if (InventorySubsystem->NumberOfKnightInvocable > 0) {
+                    if (SpawnSpecificActor(SpawnPoint, KnightActor)) {
+                        UpdateKnightNumber(--InventorySubsystem->NumberOfKnightInvocable);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 bool UPlayerUI::onArcherButtonClicked(FVector SpawnPoint) {
-    return SpawnSpecificActor(SpawnPoint, ArcherActor);
+    if (APlayerController* OwningPlayerController = GetOwningPlayer()) {
+        if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(OwningPlayerController->Player)) {
+            if (UPlayerInventorySubsystem* InventorySubsystem = LocalPlayer->GetSubsystem<UPlayerInventorySubsystem>()) {
+                if (InventorySubsystem->NumberOfArcherInvocable > 0) {
+                    if (SpawnSpecificActor(SpawnPoint, ArcherActor)) {
+                        UpdateArcherNumber(--InventorySubsystem->NumberOfArcherInvocable);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 bool UPlayerUI::SpawnSpecificActor(FVector SpawnPoint, UClass *ActorClassToSpawn) {
@@ -68,4 +95,12 @@ FVector UPlayerUI::getSpawnPoint(FVector SpawnPoint) {
     }
 
     return SpawnPoint;
+}
+
+void UPlayerUI::UpdateKnightNumber(int32 KnightNumber) {
+    KnightNumberText->SetText(FText::FromString(FString::Printf(TEXT("%d"), KnightNumber)));
+}
+
+void UPlayerUI::UpdateArcherNumber(int32 ArcherNumber) {
+    ArcherNumberText->SetText(FText::FromString(FString::Printf(TEXT("%d"), ArcherNumber)));
 }

@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int CurrentAmoutOfEnemies = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfEnemiesCurrentlyAlive = 0;
+
 	UPROPERTY(BlueprintAssignable, Category = "Timer")
 	FUpdateTimerDelegate UpdateTimer;
 
@@ -43,6 +46,9 @@ private:
 	void TimerFunction();
 
 	void SpawnEnemies();
+
+	UFUNCTION(BlueprintCallable)
+	void EnemyKilled();
 
 	void EndPlay(const EEndPlayReason::Type EndPlayReason);
 };

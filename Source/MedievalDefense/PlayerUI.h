@@ -24,7 +24,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* KnightNumberText;
 
-
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* ArcherButton;
 
@@ -54,6 +53,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateRound(int32 RoundNumber);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateKnightNumber(int32 KnightNumber);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateArcherNumber(int32 ArcherNumber);
 
 private:
 	UFUNCTION(BlueprintCallable)

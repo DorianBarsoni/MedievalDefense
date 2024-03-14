@@ -3,11 +3,14 @@
 #include "GameFramework/PlayerController.h"
 #include "Math/Vector2D.h"
 #include "CameraPlayerPawn.h"
+#include "PlayerInventorySubsystem.h"
 
 FVector2D MousePosition;
 
 ACameraPlayerController::ACameraPlayerController() {
 	APlayerController::bShowMouseCursor = 1;
+
+	PlayerUIWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerUI"));
 }
 
 ACameraPlayerPawn* camera;
@@ -19,6 +22,22 @@ void ACameraPlayerController::BeginPlay() {
 	Rotation = camera->GetControlRotation();
 	ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
 	RightVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
+
+	PlayerUI = Cast<UPlayerUI>(PlayerUIWidget->GetWidget());
+	if (PlayerUI) {
+		PlayerUI->AddToViewport();
+	}
+
+	ULocalPlayer* LocalPlayer = GetLocalPlayer();
+	if (LocalPlayer) {
+		UPlayerInventorySubsystem* InventorySubsystem = LocalPlayer->GetSubsystem<UPlayerInventorySubsystem>();
+		if (InventorySubsystem) {
+			if (PlayerUI) {
+				PlayerUI->UpdateKnightNumber(InventorySubsystem->NumberOfKnightInvocable);
+				PlayerUI->UpdateArcherNumber(InventorySubsystem->NumberOfArcherInvocable);
+			}
+		}
+	}
 }
 
 void ACameraPlayerController::Tick(float DeltaSeconds) {

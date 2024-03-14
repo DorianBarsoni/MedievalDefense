@@ -24,9 +24,8 @@ void AGM_MedievalDefense::BeginPlay() {
 			EnemySpawners.Add(EnemySpawner);
 		}
 	}
-
+	NumberOfEnemiesCurrentlyAlive = 10;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AGM_MedievalDefense::TimerFunction, 1.0f, true, 1.0f);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Nombre de spawners : %d"), EnemySpawners.Num()));
 }
 
 void AGM_MedievalDefense::TimerFunction()
@@ -54,6 +53,12 @@ void AGM_MedievalDefense::SpawnEnemies() {
 		EnemySpawners[i]->SpawnEnemies(NumberOfEnemiesPerSpawner);
 	}
 	EnemySpawners[i]->SpawnEnemies(NumberOfEnemiesPerSpawner + CurrentAmoutOfEnemies % EnemySpawners.Num());
+}
+
+void AGM_MedievalDefense::EnemyKilled() {
+	if (--NumberOfEnemiesCurrentlyAlive <= 0) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "FINI");
+	}
 }
 
 void AGM_MedievalDefense::EndPlay(const EEndPlayReason::Type EndPlayReason)
