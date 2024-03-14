@@ -23,6 +23,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PreparationTime = 60;
 
+	int CurrentTime;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int NumberOfEnemiesToAdd = 10;
 
@@ -31,6 +33,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int NumberOfEnemiesCurrentlyAlive = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfKnightToAdd;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NumberOfArcherToAdd;
 
 	UPROPERTY(BlueprintAssignable, Category = "Timer")
 	FUpdateTimerDelegate UpdateTimer;
@@ -49,6 +57,8 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void EnemyKilled();
+
+	void NextRound();
 
 	void EndPlay(const EEndPlayReason::Type EndPlayReason);
 };

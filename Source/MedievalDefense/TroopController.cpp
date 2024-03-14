@@ -76,10 +76,12 @@ void ATroopController::SwitchToNextEnemy() {
 
 	for (int32 Index = 0; Index < EnemiesToAttack.Num(); ++Index) {
 		auto EnemyToAttack = EnemiesToAttack[Index];
-		if (EnemyToAttack->IsDead()) {
+	
+		if (!EnemyToAttack || EnemyToAttack->IsDead()) {
 			EnemiesToAttack.RemoveAt(Index);
 			Index--;
 		}
+		
 	}
 
 	if (!EnemiesToAttack.IsEmpty()) {
@@ -91,7 +93,7 @@ void ATroopController::SwitchToNextEnemy() {
 
 		for (int32 Index = 0; Index < EnemiesInRange.Num(); ++Index) {
 			auto EnemyInRange = EnemiesInRange[Index];
-			if (EnemyInRange->IsDead()) {
+			if (!EnemyInRange || EnemyInRange->IsDead()) {
 				EnemiesInRange.RemoveAt(Index);
 				Index--;
 			}

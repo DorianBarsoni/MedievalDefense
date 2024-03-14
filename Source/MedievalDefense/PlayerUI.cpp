@@ -15,8 +15,8 @@ void UPlayerUI::NativeConstruct() {
 
     AGM_MedievalDefense* GameMode = GetWorld()->GetAuthGameMode<AGM_MedievalDefense>();
     if (GameMode) {
-        TimeBeforeNextRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), GameMode->PreparationTime)));
-        CurrentRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), GameMode->RoundNumber)));
+        TimeBeforeNextRound->SetText(FText::FromString(FString::Printf(TEXT("Timer : %d"), GameMode->PreparationTime)));
+        CurrentRound->SetText(FText::FromString(FString::Printf(TEXT("Round : %d"), GameMode->RoundNumber)));
 
         GameMode->UpdateTimer.AddDynamic(this, &UPlayerUI::UpdateTimeBeforeNextRound);
         GameMode->UpdateRound.AddDynamic(this, &UPlayerUI::UpdateRound);
@@ -69,13 +69,13 @@ bool UPlayerUI::SpawnSpecificActor(FVector SpawnPoint, UClass *ActorClassToSpawn
 void UPlayerUI::UpdateTimeBeforeNextRound(int32 Seconds)
 {
     if (TimeBeforeNextRound) {
-        TimeBeforeNextRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), Seconds)));
+        TimeBeforeNextRound->SetText(FText::FromString(FString::Printf(TEXT("Timer : %d"), Seconds)));
     }
 }
 
 void UPlayerUI::UpdateRound(int32 RoundNumber) {
     if (CurrentRound) {
-        CurrentRound->SetText(FText::FromString(FString::Printf(TEXT("%d"), RoundNumber)));
+        CurrentRound->SetText(FText::FromString(FString::Printf(TEXT("Round : %d"), RoundNumber)));
     }
 }
 

@@ -62,8 +62,8 @@ void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
                                 );
 
                                 OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
-                                DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
-                                DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
+                                //DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
+                                //DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
                             }
                         }
                     }

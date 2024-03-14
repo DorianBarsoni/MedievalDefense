@@ -4,6 +4,8 @@
 #include "GM_MedievalDefense.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "CameraPlayerController.h"
+#include "PlayerInventorySubsystem.h"
 
 
 AGM_MedievalDefense::AGM_MedievalDefense()
@@ -24,24 +26,19 @@ void AGM_MedievalDefense::BeginPlay() {
 			EnemySpawners.Add(EnemySpawner);
 		}
 	}
-	NumberOfEnemiesCurrentlyAlive = 10;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AGM_MedievalDefense::TimerFunction, 1.0f, true, 1.0f);
+	NextRound();
 }
 
 void AGM_MedievalDefense::TimerFunction()
 {
-	UpdateTimer.Broadcast(PreparationTime);
+	UpdateTimer.Broadcast(CurrentTime);
 
-	if (PreparationTime <= 0) {
-		PreparationTime = 60;
-		CurrentAmoutOfEnemies += NumberOfEnemiesToAdd;
-		RoundNumber++;
+	if (CurrentTime <= 0) {
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 		UpdateRound.Broadcast(RoundNumber);
-		
 		SpawnEnemies();
 	}
-	PreparationTime--;
+	CurrentTime--;
 }
 
 void AGM_MedievalDefense::SpawnEnemies() {
@@ -57,8 +54,36 @@ void AGM_MedievalDefense::SpawnEnemies() {
 
 void AGM_MedievalDefense::EnemyKilled() {
 	if (--NumberOfEnemiesCurrentlyAlive <= 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "FINI");
+		NextRound();
 	}
+}
+
+void AGM_MedievalDefense::NextRound() {
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraPlayerController::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors) {
+		if (ACameraPlayerController* CameraPlayerController = Cast<ACameraPlayerController>(Actor)) {
+			ULocalPlayer* LocalPlayer = CameraPlayerController->GetLocalPlayer();
+			if (LocalPlayer) {
+				UPlayerInventorySubsystem* InventorySubsystem = LocalPlayer->GetSubsystem<UPlayerInventorySubsystem>();
+				if (InventorySubsystem) {
+					InventorySubsystem->NumberOfKnightInvocable += NumberOfKnightToAdd;
+					InventorySubsystem->NumberOfArcherInvocable += NumberOfArcherToAdd;
+					if (CameraPlayerController->PlayerUI) {
+						CameraPlayerController->PlayerUI->UpdateKnightNumber(InventorySubsystem->NumberOfKnightInvocable);
+						CameraPlayerController->PlayerUI->UpdateArcherNumber(InventorySubsystem->NumberOfArcherInvocable);
+					}
+				}
+			}
+		}
+	}
+
+	CurrentTime = PreparationTime;
+	CurrentAmoutOfEnemies += NumberOfEnemiesToAdd;
+	NumberOfEnemiesCurrentlyAlive = CurrentAmoutOfEnemies;
+	RoundNumber++;
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AGM_MedievalDefense::TimerFunction, 1.0f, true, 1.0f);
 }
 
 void AGM_MedievalDefense::EndPlay(const EEndPlayReason::Type EndPlayReason)
