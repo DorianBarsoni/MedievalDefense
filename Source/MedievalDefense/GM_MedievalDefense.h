@@ -19,6 +19,7 @@ public:
 
 	int RoundNumber;
 	FTimerHandle TimerHandle;
+	FTimerHandle TimerHandleStartup;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PreparationTime = 60;
@@ -50,6 +51,8 @@ public:
 
 private:
 	TArray<AEnemySpawner*> EnemySpawners;
+
+	void OnStartupDelayFinished();
 
 	void TimerFunction();
 

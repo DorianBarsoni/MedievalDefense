@@ -18,6 +18,11 @@ AGM_MedievalDefense::AGM_MedievalDefense()
 void AGM_MedievalDefense::BeginPlay() {
 	Super::BeginPlay();
 
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleStartup, this, &AGM_MedievalDefense::OnStartupDelayFinished, 1.0f, false);
+}
+
+void AGM_MedievalDefense::OnStartupDelayFinished() {
+	// Code qui dépend des acteurs EnemySpawner
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemySpawner::StaticClass(), FoundActors);
 	for (AActor* Actor : FoundActors) {
