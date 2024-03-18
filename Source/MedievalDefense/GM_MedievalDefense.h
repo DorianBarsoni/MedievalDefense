@@ -53,8 +53,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundWave* AssaultMusic;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundWave* Drums;
+
 	UAudioComponent* PreparationMusicAudioComponent;
 	UAudioComponent* AssaultMusicAudioComponent;
+	UAudioComponent* DrumsAudioComponent;
 
 	virtual void BeginPlay() override;
 
@@ -71,6 +75,9 @@ private:
 	void EnemyKilled();
 
 	void NextRound();
+
+	UFUNCTION()
+	void OnDrumsMusicFinished();
 
 	void EndPlay(const EEndPlayReason::Type EndPlayReason);
 };

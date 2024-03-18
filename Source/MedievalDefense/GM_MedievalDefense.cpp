@@ -23,7 +23,6 @@ void AGM_MedievalDefense::BeginPlay() {
 }
 
 void AGM_MedievalDefense::OnStartupDelayFinished() {
-	// Code qui dépend des acteurs EnemySpawner
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemySpawner::StaticClass(), FoundActors);
 	for (AActor* Actor : FoundActors) {
@@ -44,7 +43,8 @@ void AGM_MedievalDefense::TimerFunction()
 		UpdateRound.Broadcast(RoundNumber);
 		SpawnEnemies();
 		if (PreparationMusicAudioComponent != nullptr) PreparationMusicAudioComponent->Stop();
-		AssaultMusicAudioComponent = UGameplayStatics::SpawnSound2D(this, AssaultMusic);
+		DrumsAudioComponent = UGameplayStatics::SpawnSound2D(this, Drums);
+		DrumsAudioComponent->OnAudioFinished.AddDynamic(this, &AGM_MedievalDefense::OnDrumsMusicFinished);
 	}
 	CurrentTime--;
 }
@@ -101,5 +101,10 @@ void AGM_MedievalDefense::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 
 	Super::EndPlay(EndPlayReason);
+}
+
+void AGM_MedievalDefense::OnDrumsMusicFinished() {
+	DrumsAudioComponent->Stop();
+	AssaultMusicAudioComponent = UGameplayStatics::SpawnSound2D(this, AssaultMusic);
 }
 
