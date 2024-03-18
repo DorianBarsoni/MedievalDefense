@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "CameraPlayerController.h"
 #include "PlayerInventorySubsystem.h"
+#include "Components/AudioComponent.h"
 
 
 AGM_MedievalDefense::AGM_MedievalDefense()
@@ -42,6 +43,8 @@ void AGM_MedievalDefense::TimerFunction()
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 		UpdateRound.Broadcast(RoundNumber);
 		SpawnEnemies();
+		if (PreparationMusicAudioComponent != nullptr) PreparationMusicAudioComponent->Stop();
+		AssaultMusicAudioComponent = UGameplayStatics::SpawnSound2D(this, AssaultMusic);
 	}
 	CurrentTime--;
 }
@@ -64,6 +67,7 @@ void AGM_MedievalDefense::EnemyKilled() {
 }
 
 void AGM_MedievalDefense::NextRound() {
+	if (AssaultMusicAudioComponent) AssaultMusicAudioComponent->Stop();
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraPlayerController::StaticClass(), FoundActors);
 	for (AActor* Actor : FoundActors) {
@@ -89,6 +93,7 @@ void AGM_MedievalDefense::NextRound() {
 	RoundNumber++;
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AGM_MedievalDefense::TimerFunction, 1.0f, true, 1.0f);
+	PreparationMusicAudioComponent = UGameplayStatics::SpawnSound2D(this, PreparationMusic);
 }
 
 void AGM_MedievalDefense::EndPlay(const EEndPlayReason::Type EndPlayReason)

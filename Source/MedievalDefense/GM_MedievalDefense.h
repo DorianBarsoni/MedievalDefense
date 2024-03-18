@@ -47,6 +47,15 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Round")
 	FUpdateRoundDelegate UpdateRound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundWave* PreparationMusic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundWave* AssaultMusic;
+
+	UAudioComponent* PreparationMusicAudioComponent;
+	UAudioComponent* AssaultMusicAudioComponent;
+
 	virtual void BeginPlay() override;
 
 private:
