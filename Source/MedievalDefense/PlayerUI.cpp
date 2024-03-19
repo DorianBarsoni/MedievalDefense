@@ -104,3 +104,8 @@ void UPlayerUI::UpdateKnightNumber(int32 KnightNumber) {
 void UPlayerUI::UpdateArcherNumber(int32 ArcherNumber) {
     ArcherNumberText->SetText(FText::FromString(FString::Printf(TEXT("%d"), ArcherNumber)));
 }
+
+void UPlayerUI::DisplayDefeatUI() {
+    DefeatCanvas->SetVisibility(ESlateVisibility::Visible);
+    CameraPlayerUICanvas->SetVisibility(ESlateVisibility::Hidden);
+}

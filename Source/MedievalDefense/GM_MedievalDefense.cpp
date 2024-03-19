@@ -7,6 +7,7 @@
 #include "CameraPlayerController.h"
 #include "PlayerInventorySubsystem.h"
 #include "Components/AudioComponent.h"
+#include "AttackNotify.h"
 
 
 AGM_MedievalDefense::AGM_MedievalDefense()
@@ -110,13 +111,13 @@ void AGM_MedievalDefense::OnDrumsMusicFinished() {
 }
 
 void AGM_MedievalDefense::Defeat() {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Defeat function"));
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraPlayerController::StaticClass());
 	if (FoundActor) {
 		if (ACameraPlayerController* CameraController = Cast<ACameraPlayerController>(FoundActor)) {
-			//CameraController->PlayerUI->DefeatCanvas->
-			//Modifier visibilité des canvas
+			CameraController->PlayerUI->DisplayDefeatUI();
 		}
 	}
 }

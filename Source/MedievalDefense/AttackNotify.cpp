@@ -33,7 +33,9 @@ void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 				}
 				else if (AConstruct* Castle = Cast<AConstruct>(OwnBlackboard->GetValueAsObject(BlackboardKeyCastle))) {
 					if (OwnBlackboard->GetValueAsBool(BlackboardKeyCastleRange)) {
-						Castle->GetDamage(Troop->TroopDataAsset->AttackDamage);
+						if (!Castle->IsDead()) {
+							Castle->GetDamage(Troop->TroopDataAsset->AttackDamage);
+						}
 					}
 				}
 

@@ -40,4 +40,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GetDamage(int damagePoints);
 
+	bool IsDead();
+
 };

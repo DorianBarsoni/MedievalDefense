@@ -49,6 +49,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UCanvasPanel* DefeatCanvas;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UCanvasPanel* CameraPlayerUICanvas;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnRadius;
 
@@ -63,6 +66,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateArcherNumber(int32 ArcherNumber);
+
+	void DisplayDefeatUI();
 
 private:
 	UFUNCTION(BlueprintCallable)

@@ -1,4 +1,6 @@
 #include "Construct.h"
+#include "Kismet/GameplayStatics.h"
+#include "GM_MedievalDefense.h"
 
 AConstruct::AConstruct() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,5 +30,16 @@ void AConstruct::Tick(float DeltaTime) {
 void AConstruct::GetDamage(int damagePoints) {
 	LifeComponent->GetDamage(damagePoints);
 	WidgetAsHealthBar->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
+
+	if (IsDead()) {
+		AGM_MedievalDefense* GMMedieval = Cast<AGM_MedievalDefense>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (GMMedieval != nullptr) {
+			GMMedieval->Defeat();
+		}
+	}
+}
+
+bool AConstruct::IsDead() {
+	return LifeComponent->Life <= 0;
 }
 
