@@ -62,6 +62,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	void Defeat();
+
 private:
 	TArray<AEnemySpawner*> EnemySpawners;
 

@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Components/CanvasPanel.h"
 #include "PlayerUI.generated.h"
 
 UCLASS(Blueprintable)
@@ -42,8 +43,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* TimeBeforeNextRound;
 
-	UPROPERTY(BlueprintReadWrite, meta= (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* CurrentRound;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UCanvasPanel* DefeatCanvas;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnRadius;

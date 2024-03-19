@@ -109,3 +109,15 @@ void AGM_MedievalDefense::OnDrumsMusicFinished() {
 	AssaultMusicAudioComponent = UGameplayStatics::SpawnSound2D(this, AssaultMusic);
 }
 
+void AGM_MedievalDefense::Defeat() {
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraPlayerController::StaticClass());
+	if (FoundActor) {
+		if (ACameraPlayerController* CameraController = Cast<ACameraPlayerController>(FoundActor)) {
+			//CameraController->PlayerUI->DefeatCanvas->
+			//Modifier visibilité des canvas
+		}
+	}
+}
+
