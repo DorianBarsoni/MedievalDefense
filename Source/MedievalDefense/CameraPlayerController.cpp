@@ -11,6 +11,7 @@ ACameraPlayerController::ACameraPlayerController() {
 	APlayerController::bShowMouseCursor = 1;
 
 	PlayerUIWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerUI"));
+	MenuUIWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MenuUI"));
 }
 
 ACameraPlayerPawn* camera;
@@ -28,9 +29,17 @@ void ACameraPlayerController::BeginPlay() {
 		PlayerUI->AddToViewport();
 	}
 
+	MenuUI = MenuUIWidget->GetWidget();
+	if (MenuUI) {
+		MenuUI->SetVisibility(ESlateVisibility::Hidden);
+		MenuUI->AddToViewport();
+	}
+
 	ULocalPlayer* LocalPlayer = GetLocalPlayer();
 	if (LocalPlayer) {
 		UPlayerInventorySubsystem* InventorySubsystem = LocalPlayer->GetSubsystem<UPlayerInventorySubsystem>();
+		InventorySubsystem->NumberOfKnightInvocable = 0;
+		InventorySubsystem->NumberOfArcherInvocable = 0;
 		if (InventorySubsystem) {
 			if (PlayerUI) {
 				PlayerUI->UpdateKnightNumber(InventorySubsystem->NumberOfKnightInvocable);
@@ -68,6 +77,17 @@ void ACameraPlayerController::Tick(float DeltaSeconds) {
 			location -= ForwardVector * camera->speed;
 			camera->SetActorLocation(location);
 		}
+	}
+}
+
+void ACameraPlayerController::DisplayMenu() {
+	if (MenuUI->GetVisibility() == ESlateVisibility::Hidden) {
+		MenuUI->SetVisibility(ESlateVisibility::Visible);
+		PlayerUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else {
+		MenuUI->SetVisibility(ESlateVisibility::Hidden);
+		PlayerUI->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

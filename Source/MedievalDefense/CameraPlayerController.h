@@ -19,7 +19,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UWidgetComponent* PlayerUIWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UWidgetComponent* MenuUIWidget;
+
 	UPlayerUI* PlayerUI;
+
+	UUserWidget* MenuUI;
 
 	ACameraPlayerController();
 
@@ -29,4 +34,6 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	UFUNCTION(BlueprintCallable)
+	void DisplayMenu();
 };
