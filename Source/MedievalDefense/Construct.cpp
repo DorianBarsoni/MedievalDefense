@@ -32,8 +32,7 @@ void AConstruct::GetDamage(int damagePoints) {
 	WidgetAsHealthBar->ChangeHealthPoints(LifeComponent->Life, LifeComponent->MaxLife);
 
 	if (IsDead()) {
-		AGM_MedievalDefense* GMMedieval = Cast<AGM_MedievalDefense>(UGameplayStatics::GetGameMode(GetWorld()));
-		if (GMMedieval != nullptr) {
+		if (AGM_MedievalDefense* GMMedieval = Cast<AGM_MedievalDefense>(UGameplayStatics::GetGameMode(GetWorld()))) {
 			GMMedieval->Defeat();
 		}
 	}

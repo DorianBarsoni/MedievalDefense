@@ -111,7 +111,6 @@ void AGM_MedievalDefense::OnDrumsMusicFinished() {
 }
 
 void AGM_MedievalDefense::Defeat() {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Defeat function"));
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraPlayerController::StaticClass());

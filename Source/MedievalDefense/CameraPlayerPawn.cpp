@@ -73,7 +73,6 @@ void ACameraPlayerPawn::RightClickPressed() {
 }
 
 void ACameraPlayerPawn::LeftClickHold() {
-
     FHitResult HitResult;
     if (TraceLineFromCameraToMousePosition(HitResult, false)) {
         if (isFirstHold) {
@@ -106,7 +105,6 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
 
         TArray<FHitResult> HitResults;
 
-        FCollisionShape Shape = FCollisionShape::MakeBox(HalfSize);
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
         ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 
@@ -128,8 +126,6 @@ void ACameraPlayerPawn::LeftClickHoldAndReleased() {
                 }
             }
         }
-
-        //DrawDebugBox(GetWorld(), middlePoint, HalfSize, FQuat::Identity, FColor::Orange, false, 10.0f);
     }
 }
 
@@ -146,7 +142,7 @@ bool ACameraPlayerPawn::TraceLineFromCameraToMousePosition(FHitResult &HitResult
 
     if (GetWorld()->LineTraceSingleByChannel(HitResult, MouseWorldPosition, Direction, ECC_Pawn, CollisionParams)) {
         if (showHit) {
-            DrawDebugLine(GetWorld(), MouseWorldPosition, Direction, FColor::Red, false, 5.0f, 0, 0.1f);
+            DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 5.0f, FColor::Green, false, 1.5f);
         }
         return true;
     }
