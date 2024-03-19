@@ -9,7 +9,7 @@
 FActorSpawnParameters SpawnParams;
 
 void UPlayerUI::NativeConstruct() {
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
     Super::NativeConstruct();
 

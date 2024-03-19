@@ -68,6 +68,7 @@ void AGM_MedievalDefense::EnemyKilled() {
 
 void AGM_MedievalDefense::NextRound() {
 	if (AssaultMusicAudioComponent) AssaultMusicAudioComponent->Stop();
+
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraPlayerController::StaticClass(), FoundActors);
 	for (AActor* Actor : FoundActors) {

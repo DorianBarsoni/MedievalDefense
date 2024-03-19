@@ -65,12 +65,6 @@ void ACameraPlayerPawn::RightClickPressed() {
             for (auto Troop : SelectedTroops) {
                 ATroopController* TroopController = Cast<ATroopController>(Troop->GetController());
                 if (TroopController) {
-                    /*if (UBlackboardComponent* OwnBlackboard = TroopController->GetBlackboardComponent()) {
-                        const FName BlackboardKeyPointToGo("PointToGo");
-                        const FName BlackboardKeyHasToMove("HasToMove");
-                        OwnBlackboard->SetValueAsVector(BlackboardKeyPointToGo, getRandomPointAround(HitResult.ImpactPoint));
-                        OwnBlackboard->SetValueAsBool(BlackboardKeyHasToMove, true);
-                    }*/
                     TroopController->MoveTroopToLocation(getRandomPointAround(HitResult.ImpactPoint), CalculateAcceptanceRadius());
                 }
             }
