@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class MEDIEVALDEFENSE_API UAISpawningSystem : public UObject
+class MEDIEVALDEFENSE_API AAISpawningSystem : public AActor
 {
 	GENERATED_BODY()
 
@@ -20,7 +20,7 @@ public:
 
 	AEnemySpawner* BestSpawner;
 
-	UAISpawningSystem();
+	AAISpawningSystem();
 
 	void SpawnEnemies(int NumberOfEnemiesToSpawn);
 
@@ -29,6 +29,6 @@ public:
 	void CalculateNewSpawningRate();
 
 private:
-	AEnemySpawner* GetBestSpawnerOfTheRound();
+	void GetBestSpawnerOfTheRound();
 	
 };

@@ -1,9 +1,10 @@
 #include "AISpawningSystem.h"
 
-UAISpawningSystem::UAISpawningSystem() {
+AAISpawningSystem::AAISpawningSystem() {
+	BestSpawner = nullptr;
 }
 
-void UAISpawningSystem::SpawnEnemies(int NumberOfEnemiesToSpawn) {
+void AAISpawningSystem::SpawnEnemies(int NumberOfEnemiesToSpawn) {
 	if (BestSpawner != nullptr) {
 
 		int NumberOfEnemiesSpawned = 0;
@@ -20,7 +21,7 @@ void UAISpawningSystem::SpawnEnemies(int NumberOfEnemiesToSpawn) {
 	}
 }
 
-void UAISpawningSystem::InitSpawningSystem() {
+void AAISpawningSystem::InitSpawningSystem() {
 	if (!EnemySpawners.IsEmpty()) {
 		BestSpawner = EnemySpawners[0];
 
@@ -31,8 +32,8 @@ void UAISpawningSystem::InitSpawningSystem() {
 	}
 }
 
-void UAISpawningSystem::CalculateNewSpawningRate() {
-	BestSpawner = GetBestSpawnerOfTheRound();
+void AAISpawningSystem::CalculateNewSpawningRate() {
+	GetBestSpawnerOfTheRound();
 
 	if (BestSpawner != nullptr) {
 		float TotalSpawnRatio = 0.0f;
@@ -48,16 +49,14 @@ void UAISpawningSystem::CalculateNewSpawningRate() {
 	}
 }
 
-AEnemySpawner* UAISpawningSystem::GetBestSpawnerOfTheRound() {
+void AAISpawningSystem::GetBestSpawnerOfTheRound() {
 	if (!EnemySpawners.IsEmpty()) {
-		AEnemySpawner* NewBestSpawner = EnemySpawners[0];
+		BestSpawner = EnemySpawners[0];
 
 		for (AEnemySpawner* Spawner : EnemySpawners) {
-			if (Spawner->DamageDoneLastRound > NewBestSpawner->DamageDoneLastRound) {
-				NewBestSpawner = Spawner;
+			if (Spawner->DamageDoneLastRound > BestSpawner->DamageDoneLastRound) {
+				BestSpawner = Spawner;
 			}
 		}
-		return NewBestSpawner;
 	}
-	return nullptr;
 }

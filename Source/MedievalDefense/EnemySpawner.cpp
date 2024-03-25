@@ -6,8 +6,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/UnrealMathUtility.h"
 
-UNavigationSystemBase* NavigationSystem;
-UNavigationSystemV1* NavigationSystemV1;
+UNavigationSystemBase* SpawnerNavigationSystem;
+UNavigationSystemV1* SpawnerNavigationSystemV1;
 
 AEnemySpawner::AEnemySpawner()
 {
@@ -29,9 +29,9 @@ void AEnemySpawner::BeginPlay()
     AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), CastleClass);
     Castle = Cast<AConstruct>(FoundActor);
 
-    NavigationSystem = GetWorld()->GetNavigationSystem();
-    if (NavigationSystem) {
-        NavigationSystemV1 = Cast<UNavigationSystemV1>(NavigationSystem);
+    SpawnerNavigationSystem = GetWorld()->GetNavigationSystem();
+    if (SpawnerNavigationSystem) {
+        SpawnerNavigationSystemV1 = Cast<UNavigationSystemV1>(SpawnerNavigationSystem);
     }
 }
 
@@ -42,12 +42,12 @@ void AEnemySpawner::Tick(float DeltaTime)
 }
 
 void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
-    if (NavigationSystemV1) {
+    if (SpawnerNavigationSystemV1) {
         FNavLocation RandomLocation;
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
         for (int i = 0; i < NumberOfEnemiesToSpawn; i++) {
-            if (NavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
+            if (SpawnerNavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
                 RandomLocation.Location += FVector(0, 0, 100);
                 AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
 
@@ -71,7 +71,9 @@ void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
                             //DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
                         }
                     }
-                    Cast<ATroopController>(Troop->GetController())->SpawnedFrom = this;
+                    if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
+                        TroopController->SpawnedFrom = this;
+                    }
                 }
             } else UE_LOG(LogTemp, Error, TEXT("GetReachablePoint"));
         }  

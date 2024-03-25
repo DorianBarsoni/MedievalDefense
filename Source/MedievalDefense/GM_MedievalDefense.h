@@ -61,13 +61,16 @@ public:
 	UAudioComponent* AssaultMusicAudioComponent;
 	UAudioComponent* DrumsAudioComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AAISpawningSystem> SpawningSystemType;
+
+	AAISpawningSystem* SpawningSystem;
+
 	virtual void BeginPlay() override;
 
 	void Defeat();
 
 private:
-	UAISpawningSystem* SpawningSystem;
-
 	void OnStartupDelayFinished();
 
 	void TimerFunction();

@@ -20,7 +20,10 @@ AGM_MedievalDefense::AGM_MedievalDefense()
 void AGM_MedievalDefense::BeginPlay() {
 	Super::BeginPlay();
 
-	SpawningSystem = NewObject<UAISpawningSystem>(this);
+	if (SpawningSystemType) {
+		SpawningSystem = GetWorld()->SpawnActor<AAISpawningSystem>(SpawningSystemType);
+	}
+
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleStartup, this, &AGM_MedievalDefense::OnStartupDelayFinished, 1.0f, false);
 }
 
