@@ -26,6 +26,10 @@ public:
 
 	TArray<ACastleAttackableArea*> AreasToAttack;
 
+	int DamageDoneLastRound = 0;
+
+	float SpawningRate = 0.0f;
+
 protected:
 	virtual void BeginPlay() override;
 

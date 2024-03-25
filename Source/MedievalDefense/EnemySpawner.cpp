@@ -6,6 +6,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/UnrealMathUtility.h"
 
+UNavigationSystemBase* NavigationSystem;
+UNavigationSystemV1* NavigationSystemV1;
+
 AEnemySpawner::AEnemySpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,6 +28,11 @@ void AEnemySpawner::BeginPlay()
 
     AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), CastleClass);
     Castle = Cast<AConstruct>(FoundActor);
+
+    NavigationSystem = GetWorld()->GetNavigationSystem();
+    if (NavigationSystem) {
+        NavigationSystemV1 = Cast<UNavigationSystemV1>(NavigationSystem);
+    }
 }
 
 void AEnemySpawner::Tick(float DeltaTime)
@@ -34,43 +42,39 @@ void AEnemySpawner::Tick(float DeltaTime)
 }
 
 void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
-    UNavigationSystemBase* NavigationSystem = GetWorld()->GetNavigationSystem();
-    if (NavigationSystem) {
-        UNavigationSystemV1* NavigationSystemV1 = Cast<UNavigationSystemV1>(NavigationSystem);
-        if (NavigationSystemV1) {
-            FNavLocation RandomLocation;
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-            for (int i = 0; i < NumberOfEnemiesToSpawn; i++) {
-                if (NavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
-                    RandomLocation.Location += FVector(0, 0, 100);
-                    AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
+    if (NavigationSystemV1) {
+        FNavLocation RandomLocation;
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        for (int i = 0; i < NumberOfEnemiesToSpawn; i++) {
+            if (NavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
+                RandomLocation.Location += FVector(0, 0, 100);
+                AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
 
-                    if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Enemy)) {
-                        if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
-                            if (UBlackboardComponent* OwnBlackboard = TroopController->GetBlackboardComponent()) {
-                                const FName BlackboardKeyCastle("Castle");
-                                OwnBlackboard->SetValueAsObject(BlackboardKeyCastle, Castle);
+                if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Enemy)) {
+                    if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
+                        if (UBlackboardComponent* OwnBlackboard = TroopController->GetBlackboardComponent()) {
+                            const FName BlackboardKeyCastle("Castle");
+                            OwnBlackboard->SetValueAsObject(BlackboardKeyCastle, Castle);
 
-                                const FName BlackboardKeyAttackablePoint("CastleAttackPoint");
-                                int32 RandomAreaIndex = FMath::RandRange(0, AreasToAttack.Num() - 1);
-                                ACastleAttackableArea* RandomArea = AreasToAttack[RandomAreaIndex];
-                                FRotator Rotation = RandomArea->LocationVolume->GetComponentRotation();
-                                FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(
-                                    RandomArea->GetActorLocation(),
-                                    RandomArea->LocationVolume->GetScaledBoxExtent().RotateAngleAxis(Rotation.Yaw, FVector::UpVector)
-                                );
+                            const FName BlackboardKeyAttackablePoint("CastleAttackPoint");
+                            int32 RandomAreaIndex = FMath::RandRange(0, AreasToAttack.Num() - 1);
+                            ACastleAttackableArea* RandomArea = AreasToAttack[RandomAreaIndex];
+                            FRotator Rotation = RandomArea->LocationVolume->GetComponentRotation();
+                            FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(
+                                RandomArea->GetActorLocation(),
+                                RandomArea->LocationVolume->GetScaledBoxExtent().RotateAngleAxis(Rotation.Yaw, FVector::UpVector)
+                            );
 
-                                OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
-                                //DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
-                                //DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
-                            }
+                            OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
+                            //DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
+                            //DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
                         }
                     }
-                } else UE_LOG(LogTemp, Error, TEXT("GetReachablePoint"));
-            }  
-        } else UE_LOG(LogTemp, Error, TEXT("NavSystemV1"));
-    } else UE_LOG(LogTemp, Error, TEXT("NavSystem"));
-    
+                    Cast<ATroopController>(Troop->GetController())->SpawnedFrom = this;
+                }
+            } else UE_LOG(LogTemp, Error, TEXT("GetReachablePoint"));
+        }  
+    } else UE_LOG(LogTemp, Error, TEXT("NavSystemV1"));
 }
 

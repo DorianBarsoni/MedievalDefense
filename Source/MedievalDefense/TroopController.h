@@ -5,6 +5,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "TroopCharacter.h"
+#include "EnemySpawner.h"
 #include "TroopController.generated.h"
 
 UCLASS(Blueprintable)
@@ -31,6 +32,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ATroopCharacter*> EnemiesToAttack;
+
+	AEnemySpawner* SpawnedFrom;
 
 	UFUNCTION(BlueprintCallable)
 	void MoveTroopToLocation(FVector location, float AcceptanceRadius=0);

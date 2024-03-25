@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "EnemySpawner.h"
+#include "AISpawningSystem.h"
 #include "GM_MedievalDefense.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateTimerDelegate, int32, Seconds);
@@ -65,7 +66,7 @@ public:
 	void Defeat();
 
 private:
-	TArray<AEnemySpawner*> EnemySpawners;
+	UAISpawningSystem* SpawningSystem;
 
 	void OnStartupDelayFinished();
 

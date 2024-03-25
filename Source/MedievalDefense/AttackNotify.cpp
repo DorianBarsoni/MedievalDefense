@@ -20,6 +20,11 @@ void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 				ATroopCharacter* EnemyChased = Cast<ATroopCharacter>(OwnBlackboard->GetValueAsObject(BlackboardKeyChased));
 				if (EnemyChased && OwnBlackboard->GetValueAsBool(BlackboardKeyEnemyRange)) {
 					EnemyChased->GetDamage(Troop->TroopDataAsset->AttackDamage);
+					if (Troop->TroopDataAsset->TeamTag.GetTagName() == "Enemy") {
+						if (Troop->IsValidLowLevel() && TroopController->IsValidLowLevel()) {
+							TroopController->SpawnedFrom->DamageDoneLastRound += Troop->TroopDataAsset->AttackDamage;
+						}	
+					}
 
 					if (EnemyChased->IsDead()) {
 						if (ATroopController* EnemyController = Cast<ATroopController>(EnemyChased->GetController())) {
@@ -34,16 +39,14 @@ void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 					}
 				}
 				else if (AConstruct* Castle = Cast<AConstruct>(OwnBlackboard->GetValueAsObject(BlackboardKeyCastle))) {
-					if (Troop->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
-						if (Castle == nullptr) {
-							GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("nullptr"));
-						}
-						else GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("valid"));
-					}
-					
 					if (OwnBlackboard->GetValueAsBool(BlackboardKeyCastleRange)) {
 						if (!Castle->IsDead()) {
 							Castle->GetDamage(Troop->TroopDataAsset->AttackDamage);
+							if (Troop->TroopDataAsset->TeamTag.GetTagName() == "Enemy") {
+								if (Troop->IsValidLowLevel() && TroopController->IsValidLowLevel()) {
+									TroopController->SpawnedFrom->DamageDoneLastRound += Troop->TroopDataAsset->AttackDamage * 2;
+								}
+							}
 						}
 					}
 				}

@@ -20,6 +20,7 @@ AGM_MedievalDefense::AGM_MedievalDefense()
 void AGM_MedievalDefense::BeginPlay() {
 	Super::BeginPlay();
 
+	SpawningSystem = NewObject<UAISpawningSystem>(this);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleStartup, this, &AGM_MedievalDefense::OnStartupDelayFinished, 1.0f, false);
 }
 
@@ -29,9 +30,11 @@ void AGM_MedievalDefense::OnStartupDelayFinished() {
 	for (AActor* Actor : FoundActors) {
 		AEnemySpawner* EnemySpawner = Cast<AEnemySpawner>(Actor);
 		if (EnemySpawner) {
-			EnemySpawners.Add(EnemySpawner);
+			SpawningSystem->EnemySpawners.Add(EnemySpawner);
 		}
 	}
+	SpawningSystem->InitSpawningSystem();
+
 	NextRound();
 }
 
@@ -51,14 +54,7 @@ void AGM_MedievalDefense::TimerFunction()
 }
 
 void AGM_MedievalDefense::SpawnEnemies() {
-	int NumberOfEnemiesToSpawn = CurrentAmoutOfEnemies;
-	int NumberOfEnemiesPerSpawner = CurrentAmoutOfEnemies / EnemySpawners.Num();
-
-	int i;
-	for (i=0; i < EnemySpawners.Num() - 1; i++) {
-		EnemySpawners[i]->SpawnEnemies(NumberOfEnemiesPerSpawner);
-	}
-	EnemySpawners[i]->SpawnEnemies(NumberOfEnemiesPerSpawner + CurrentAmoutOfEnemies % EnemySpawners.Num());
+	SpawningSystem->SpawnEnemies(CurrentAmoutOfEnemies);
 }
 
 void AGM_MedievalDefense::EnemyKilled() {
@@ -93,6 +89,9 @@ void AGM_MedievalDefense::NextRound() {
 	CurrentAmoutOfEnemies += NumberOfEnemiesToAdd;
 	NumberOfEnemiesCurrentlyAlive = CurrentAmoutOfEnemies;
 	RoundNumber++;
+	if (RoundNumber != 1) {
+		SpawningSystem->CalculateNewSpawningRate();
+	}
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AGM_MedievalDefense::TimerFunction, 1.0f, true, 1.0f);
 	PreparationMusicAudioComponent = UGameplayStatics::SpawnSound2D(this, PreparationMusic);
