@@ -35,6 +35,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void MoveTroopToLocation(FVector location, float AcceptanceRadius=0);
 
+	UFUNCTION(BlueprintCallable)
 	void SwitchToNextEnemy();
 
 private:

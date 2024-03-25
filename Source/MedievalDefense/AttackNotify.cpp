@@ -28,10 +28,19 @@ void UAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* 
 								EnemyBlackboard->SetValueAsBool(BlackboardKeyEnemyIsDead, true);
 							}
 						}
+						TroopController->EnemiesInRange.Remove(EnemyChased);
+						TroopController->EnemiesToAttack.Remove(EnemyChased);
 						TroopController->SwitchToNextEnemy();
 					}
 				}
 				else if (AConstruct* Castle = Cast<AConstruct>(OwnBlackboard->GetValueAsObject(BlackboardKeyCastle))) {
+					if (Troop->TroopDataAsset->TeamTag.GetTagName() == "Ally") {
+						if (Castle == nullptr) {
+							GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("nullptr"));
+						}
+						else GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("valid"));
+					}
+					
 					if (OwnBlackboard->GetValueAsBool(BlackboardKeyCastleRange)) {
 						if (!Castle->IsDead()) {
 							Castle->GetDamage(Troop->TroopDataAsset->AttackDamage);
