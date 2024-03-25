@@ -47,7 +47,7 @@ void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
         for (int i = 0; i < NumberOfEnemiesToSpawn; i++) {
-            if (SpawnerNavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 3000.0f, RandomLocation)) {
+            if (SpawnerNavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 2000.0f, RandomLocation)) {
                 RandomLocation.Location += FVector(0, 0, 100);
                 AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
 

@@ -13,10 +13,10 @@ void AAISpawningSystem::SpawnEnemies(int NumberOfEnemiesToSpawn) {
 				int NumberOfEnemiesForCurrentSpawner = FMath::FloorToInt(Spawner->SpawningRate * NumberOfEnemiesToSpawn);
 				NumberOfEnemiesSpawned += NumberOfEnemiesForCurrentSpawner;
 				Spawner->SpawnEnemies(NumberOfEnemiesForCurrentSpawner);
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Spawning %d enemies"), NumberOfEnemiesForCurrentSpawner));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Spawning %d enemies"), NumberOfEnemiesForCurrentSpawner));
 			}
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Spawning %d enemies"), NumberOfEnemiesToSpawn - NumberOfEnemiesSpawned));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Spawning %d enemies"), NumberOfEnemiesToSpawn - NumberOfEnemiesSpawned));
 		BestSpawner->SpawnEnemies(NumberOfEnemiesToSpawn - NumberOfEnemiesSpawned);
 	}
 }
@@ -41,11 +41,11 @@ void AAISpawningSystem::CalculateNewSpawningRate() {
 			if (Spawner != BestSpawner) {
 				Spawner->SpawningRate /= 1.5f;
 				TotalSpawnRatio += Spawner->SpawningRate;
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Spawning rate %f"), Spawner->SpawningRate));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Spawning rate %f"), Spawner->SpawningRate));
 			}
 		}
 		BestSpawner->SpawningRate = 1.0f - TotalSpawnRatio;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Best spawning rate %f"), BestSpawner->SpawningRate));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Purple, FString::Printf(TEXT("Best spawning rate %f"), BestSpawner->SpawningRate));
 	}
 }
 
