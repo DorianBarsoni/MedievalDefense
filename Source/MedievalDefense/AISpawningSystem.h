@@ -22,7 +22,7 @@ public:
 
 	AAISpawningSystem();
 
-	void SpawnEnemies(int NumberOfEnemiesToSpawn);
+	int SpawnEnemies(int NumberOfEnemiesToSpawn);
 
 	void InitSpawningSystem();
 

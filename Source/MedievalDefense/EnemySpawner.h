@@ -30,6 +30,8 @@ public:
 
 	float SpawningRate = 0.0f;
 
+	int NumberOfEnemiesSpawnedLastRound = 0;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -37,7 +39,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnEnemies(int NumberOfEnemiesToSpawn);
+	int SpawnEnemies(int NumberOfEnemiesToSpawn);
 
 private:
 	AConstruct* Castle;

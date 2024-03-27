@@ -57,7 +57,7 @@ void AGM_MedievalDefense::TimerFunction()
 }
 
 void AGM_MedievalDefense::SpawnEnemies() {
-	SpawningSystem->SpawnEnemies(CurrentAmoutOfEnemies);
+	NumberOfEnemiesCurrentlyAlive = SpawningSystem->SpawnEnemies(CurrentAmoutOfEnemies);
 }
 
 void AGM_MedievalDefense::EnemyKilled() {
@@ -90,7 +90,7 @@ void AGM_MedievalDefense::NextRound() {
 
 	CurrentTime = PreparationTime;
 	CurrentAmoutOfEnemies += NumberOfEnemiesToAdd;
-	NumberOfEnemiesCurrentlyAlive = CurrentAmoutOfEnemies;
+	//NumberOfEnemiesCurrentlyAlive = CurrentAmoutOfEnemies;
 	RoundNumber++;
 	if (RoundNumber != 1) {
 		SpawningSystem->CalculateNewSpawningRate();

@@ -41,42 +41,48 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 }
 
-void AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
+int AEnemySpawner::SpawnEnemies(int NumberOfEnemiesToSpawn) {
     if (SpawnerNavigationSystemV1) {
         FNavLocation RandomLocation;
         FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
         for (int i = 0; i < NumberOfEnemiesToSpawn; i++) {
             if (SpawnerNavigationSystemV1->GetRandomReachablePointInRadius(GetActorLocation(), 2000.0f, RandomLocation)) {
                 RandomLocation.Location += FVector(0, 0, 100);
                 AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawn, RandomLocation.Location, FRotator::ZeroRotator, SpawnParams);
 
-                if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Enemy)) {
-                    if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
-                        if (UBlackboardComponent* OwnBlackboard = TroopController->GetBlackboardComponent()) {
-                            const FName BlackboardKeyCastle("Castle");
-                            OwnBlackboard->SetValueAsObject(BlackboardKeyCastle, Castle);
+                if (Enemy != nullptr) {
+                    NumberOfEnemiesSpawnedLastRound++;
+                    if (ATroopCharacter* Troop = Cast<ATroopCharacter>(Enemy)) {
+                        if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
+                            if (UBlackboardComponent* OwnBlackboard = TroopController->GetBlackboardComponent()) {
+                                const FName BlackboardKeyCastle("Castle");
+                                OwnBlackboard->SetValueAsObject(BlackboardKeyCastle, Castle);
 
-                            const FName BlackboardKeyAttackablePoint("CastleAttackPoint");
-                            int32 RandomAreaIndex = FMath::RandRange(0, AreasToAttack.Num() - 1);
-                            ACastleAttackableArea* RandomArea = AreasToAttack[RandomAreaIndex];
-                            FRotator Rotation = RandomArea->LocationVolume->GetComponentRotation();
-                            FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(
-                                RandomArea->GetActorLocation(),
-                                RandomArea->LocationVolume->GetScaledBoxExtent().RotateAngleAxis(Rotation.Yaw, FVector::UpVector)
-                            );
+                                const FName BlackboardKeyAttackablePoint("CastleAttackPoint");
+                                int32 RandomAreaIndex = FMath::RandRange(0, AreasToAttack.Num() - 1);
+                                ACastleAttackableArea* RandomArea = AreasToAttack[RandomAreaIndex];
+                                FRotator Rotation = RandomArea->LocationVolume->GetComponentRotation();
+                                FVector RandomAttackPoint = UKismetMathLibrary::RandomPointInBoundingBox(
+                                    RandomArea->GetActorLocation(),
+                                    RandomArea->LocationVolume->GetScaledBoxExtent().RotateAngleAxis(Rotation.Yaw, FVector::UpVector)
+                                );
 
-                            OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
-                            //DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
-                            //DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
+                                OwnBlackboard->SetValueAsVector(BlackboardKeyAttackablePoint, RandomAttackPoint);
+                                //DrawDebugPoint(GetWorld(), RandomAttackPoint, 10.0f, FColor::Red, true);
+                                //DrawDebugBox(GetWorld(), RandomArea->GetActorLocation(), RandomArea->LocationVolume->GetScaledBoxExtent(), FQuat(RandomArea->LocationVolume->GetComponentRotation()), FColor::Green, true);
+                            }
+                        }
+                        if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
+                            TroopController->SpawnedFrom = this;
                         }
                     }
-                    if (ATroopController* TroopController = Cast<ATroopController>(Troop->GetController())) {
-                        TroopController->SpawnedFrom = this;
-                    }
                 }
+                
             } else UE_LOG(LogTemp, Error, TEXT("GetReachablePoint"));
         }  
     } else UE_LOG(LogTemp, Error, TEXT("NavSystemV1"));
+
+    return NumberOfEnemiesSpawnedLastRound;
 }
 
